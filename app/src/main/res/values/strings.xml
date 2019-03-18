@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">FavoriteFilmApp</string>
+
+    <!-- Set values for Movie data placeholder in Fragment Favorite Movie -->
+    <string name="movie_title_text">Movie Title</string>
+    <string name="movie_ratings_text">Ratings</string>
+    <string name="movie_release_date_text">Release Date</string>
+    <string name="movie_language_text">Language</string>
+
+    <!-- Set values for TV Show data placeholder in Fragment Favorite TV Show -->
+    <string name="tv_show_name_text">TV Show Name</string>
+    <string name="tv_show_ratings_text">Ratings</string>
+    <string name="tv_show_first_air_date_text">First Air Date</string>
+    <string name="tv_show_language_text">Language</string>
+
+    <!-- Values untuk favorite item empty state data -->
+    <string name="no_favorite_movie_data_shown">There is no favorite movie data to display</string>
+    <string name="no_favorite_tv_show_data_shown">There is no favorite TV Show data to display</string>
+    <string name="no_internet_connection">There is no internet connection</string>
+    
+    <!-- Values untuk favorite item navigation -->
+    <string name="favorite_movie">Favorite Movie</string>
+    <string name="favorite_tv_show">Favorite TV Show</string>
+
 </resources>

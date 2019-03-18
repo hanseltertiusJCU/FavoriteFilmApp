@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Navigation item untuk bottom navigation view -->
+    <item
+        android:id="@+id/navigation_favorite_movie"
+        android:icon="@drawable/ic_movie"
+        android:title="@string/favorite_movie"/>
+    <item
+        android:id="@+id/navigation_favorite_tv_show"
+        android:icon="@drawable/ic_tv_show"
+        android:title="@string/favorite_tv_show"/>
+
+</menu>
