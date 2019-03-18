@@ -61,4 +61,6 @@
     <string name="detailed_tv_show_unknown_first_air_date">First Air Date Unknown</string>
     <string name="detailed_tv_show_unknown_overview">Overview Unknown</string>
 
+    <!-- String for marked as favorite -->
+    <string name="mark_as_favorite">Marked as Favorite</string>
 </resources>
