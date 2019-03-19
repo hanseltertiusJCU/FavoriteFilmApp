@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">FavoriteFilmApp</string>
 
+    <!-- Set Span movie item section title -->
+    <string name="span_movie_item_ratings">Ratings :</string>
+    <string name="span_movie_item_language">Language :</string>
+    <string name="span_movie_item_release_date">Release Date :</string>
+
+    <!-- Set Span TV Show item section title -->
+    <string name="span_tv_show_item_ratings">Ratings :</string>
+    <string name="span_tv_show_item_language">Language :</string>
+    <string name="span_tv_show_item_first_air_date">First Air Date :</string>
+
     <!-- Set values for Movie data placeholder in Fragment Favorite Movie -->
     <string name="movie_title_text">Movie Title</string>
     <string name="movie_ratings_text">Ratings</string>
