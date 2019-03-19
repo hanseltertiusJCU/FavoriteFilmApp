@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // build config untuk JSON operation (movie + tv show)
         buildConfigField("String", "API_KEY", "\"920c265d2e074ebf06d98bf438bded70\"")
         buildConfigField("String", "BASE_MOVIE_DETAILED_URL", "\"https://api.themoviedb.org/3/movie/\"")
         buildConfigField("String", "BASE_TV_SHOW_DETAILED_URL", "\"https://api.themoviedb.org/3/tv/\"")
@@ -16,6 +17,24 @@ android {
         buildConfigField("String", "POSTER_IMAGE_ITEM_URL", "\"https://image.tmdb.org/t/p/w185\"")
         buildConfigField("String", "SEARCH_QUERY", "\"&query=\"")
         buildConfigField("String", "LANGUAGE_US", "\"&language=en-US\"")
+        // build config untuk key intent and parcelable state (movie)
+        buildConfigField("String", "FAVORITE_MOVIE_ID_DATA", "\"FAVORITE_MOVIE_ID_DATA\"")
+        buildConfigField("String", "FAVORITE_MOVIE_TITLE_DATA", "\"FAVORITE_MOVIE_TITLE_DATA\"")
+        buildConfigField("String", "FAVORITE_MOTIE_BOOLEAN_STATE_DATA", "\"FAVORITE_MOVIE_BOOLEAN_STATE_DATA\"")
+        buildConfigField("String", "FAVORITE_MOVIE_LIST_STATE", "\"FAVORITE_MOVIE_LIST_STATE\"")
+        // build config untuk key intent and parcelable state (tv show)
+        buildConfigField("String", "FAVORITE_TV_SHOW_ID_DATA", "\"FAVORITE_TV_SHOW_ID_DATA\"")
+        buildConfigField("String", "FAVORITE_TV_SHOW_TITLE_DATA", "\"FAVORITE_TV_SHOW_TITLE_DATA\"")
+        buildConfigField("String", "FAVORITE_TV_SHOW_BOOLEAN_STATE", "\"FAVORITE_TV_SHOW_BOOLEAN_STATE\"")
+        buildConfigField("String", "FAVORITE_TV_SHOW_LIST_STATE", "\"FAVORITE_TV_SHOW_LIST_STATE\"")
+        // build config untuk mode intent
+        buildConfigField("String", "FAVORITE_MODE_INTENT", "\"FAVORITE_MODE_INTENT\"")
+        // build config untuk detail activity
+        buildConfigField("String", "FAVORITE_EXTRA_CHANGED_STATE", "\"FAVORITE_EXTRA_CHANGED_STATE\"")
+        buildConfigField("String", "KEY_DRAWABLE_MARKED_AS_FAVORITE", "\"KEY_DRAWABLE_MARKED_AS_FAVORITE\"")
+        buildConfigField("String", "FAVORITE_EXTRA_URI", "\"FAVORITE_EXTRA_URI\"")
+        buildConfigField("String", "FAVORITE_EXTRA_MOVIE_ITEM", "\"FAVORITE_EXTRA_MOVIE_ITEM\"")
+        buildConfigField("String", "FAVORITE_EXTRA_TV_SHOW_ITEM", "\"FAVORITE_EXTRA_TV_SHOW_ITEM\"")
     }
     buildTypes {
         release {

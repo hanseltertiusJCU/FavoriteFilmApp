@@ -59,7 +59,7 @@ public class RecyclerViewItemClickSupport {
     }
 
     // Setter method untuk set recyclerview item click listener bedasarkan value dari parameter
-    public void setmOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener mOnRecyclerViewItemClickListener) {
+    public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener mOnRecyclerViewItemClickListener) {
         this.mOnRecyclerViewItemClickListener = mOnRecyclerViewItemClickListener;
     }
 

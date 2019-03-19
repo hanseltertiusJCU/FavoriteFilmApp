@@ -169,6 +169,11 @@ public class MovieItem implements Parcelable {
         return favoriteBooleanState;
     }
 
+    // Setter untuk favorite date added di movie
+    public void setDateAddedFavorite(String dateAddedFavorite) {
+        this.dateAddedFavorite = dateAddedFavorite;
+    }
+
     // Setter untuk favorite boolean state di movie
     public void setFavoriteBooleanState(int favoriteBooleanState) {
         this.favoriteBooleanState = favoriteBooleanState;

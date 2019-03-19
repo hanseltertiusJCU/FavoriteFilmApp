@@ -1,6 +1,8 @@
 package com.example.favoritefilmapp.entity;
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.example.favoritefilmapp.db.FavoriteDatabaseContract;
 
@@ -11,7 +13,7 @@ import static android.provider.BaseColumns._ID;
 import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.getColumnInt;
 import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.getColumnString;
 
-public class TvShowItem {
+public class TvShowItem implements Parcelable {
     // Nilai dari value untuk TvShowItem
     private int tvShowId;
     private String tvShowName;
@@ -89,6 +91,50 @@ public class TvShowItem {
         this.favoriteBooleanState = getColumnInt(cursor, FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_FAVORITE_COLUMN);
     }
 
+    protected TvShowItem(Parcel in) {
+        tvShowId = in.readInt();
+        tvShowName = in.readString();
+        tvShowRuntimeEpisodes = in.readString();
+        tvShowRatings = in.readString();
+        tvShowOriginalLanguage = in.readString();
+        tvShowFirstAirDate = in.readString();
+        tvShowOverview = in.readString();
+        tvShowPosterPath = in.readString();
+        dateAddedFavorite = in.readString();
+        favoriteBooleanState = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(tvShowId);
+        dest.writeString(tvShowName);
+        dest.writeString(tvShowRuntimeEpisodes);
+        dest.writeString(tvShowRatings);
+        dest.writeString(tvShowOriginalLanguage);
+        dest.writeString(tvShowFirstAirDate);
+        dest.writeString(tvShowOverview);
+        dest.writeString(tvShowPosterPath);
+        dest.writeString(dateAddedFavorite);
+        dest.writeInt(favoriteBooleanState);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<TvShowItem> CREATOR = new Creator<TvShowItem>() {
+        @Override
+        public TvShowItem createFromParcel(Parcel in) {
+            return new TvShowItem(in);
+        }
+
+        @Override
+        public TvShowItem[] newArray(int size) {
+            return new TvShowItem[size];
+        }
+    };
+
     // Getter untuk semua attribute
     public int getTvShowId() {
         return tvShowId;
@@ -128,6 +174,11 @@ public class TvShowItem {
 
     public int getFavoriteBooleanState() {
         return favoriteBooleanState;
+    }
+
+    // Setter untuk set date added favorite di tv show
+    public void setDateAddedFavorite(String dateAddedFavorite) {
+        this.dateAddedFavorite = dateAddedFavorite;
     }
 
     // Setter untuk favorite boolean state di tv show

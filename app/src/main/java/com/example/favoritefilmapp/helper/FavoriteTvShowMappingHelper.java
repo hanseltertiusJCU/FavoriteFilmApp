@@ -2,7 +2,6 @@ package com.example.favoritefilmapp.helper;
 
 import android.database.Cursor;
 
-import com.example.favoritefilmapp.entity.MovieItem;
 import com.example.favoritefilmapp.entity.TvShowItem;
 
 import java.util.ArrayList;

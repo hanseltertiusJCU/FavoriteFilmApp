@@ -30,7 +30,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
     private Context context;
 
     // Constructor that takes up Context
-    private MovieItemAdapter(Context context){
+    public MovieItemAdapter(Context context){
         this.context = context;
     }
 

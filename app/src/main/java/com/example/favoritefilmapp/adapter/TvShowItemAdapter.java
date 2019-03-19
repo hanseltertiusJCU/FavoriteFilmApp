@@ -30,7 +30,7 @@ public class TvShowItemAdapter extends RecyclerView.Adapter<TvShowItemAdapter.Tv
     private Context context;
 
     // Constructor that takes up Context
-    private TvShowItemAdapter(Context context) {
+    public TvShowItemAdapter(Context context) {
         this.context = context;
     }
 
