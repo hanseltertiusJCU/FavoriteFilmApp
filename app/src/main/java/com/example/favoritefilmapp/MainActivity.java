@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     @Override
     public void favoriteMoviePostExecute(Cursor favoriteMovieItems) {
         favoriteMovieItemArray = mapCursorToFavoriteMovieArrayList(favoriteMovieItems);
+        // todo: fragment detatch then attach
     }
 
     // Implement method dari interface load favorite tv show

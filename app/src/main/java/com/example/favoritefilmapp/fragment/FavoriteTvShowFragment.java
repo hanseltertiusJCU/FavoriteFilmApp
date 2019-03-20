@@ -26,7 +26,6 @@ import com.example.favoritefilmapp.LoadFavoriteTvShowCallback;
 import com.example.favoritefilmapp.MainActivity;
 import com.example.favoritefilmapp.R;
 import com.example.favoritefilmapp.adapter.TvShowItemAdapter;
-import com.example.favoritefilmapp.async.LoadFavoriteMoviesAsync;
 import com.example.favoritefilmapp.async.LoadFavoriteTvShowAsync;
 import com.example.favoritefilmapp.entity.TvShowItem;
 import com.example.favoritefilmapp.support.RecyclerViewItemClickSupport;
