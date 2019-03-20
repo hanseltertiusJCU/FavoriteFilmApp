@@ -8,14 +8,14 @@ import android.support.annotation.NonNull;
 import com.example.favoritefilmapp.model.DetailedFavoriteMovieViewModel;
 
 // Class ini berguna untuk membuat ViewModel yang menampung lebih dari 1 parameter
-public class DetailedFavoriteViewModelFactory implements ViewModelProvider.Factory {
+public class DetailedFavoriteMovieViewModelFactory implements ViewModelProvider.Factory {
 
     // Initiate application and movie id variable
     private Application mApplication;
     private int mFavoriteMovieId;
 
     // Constructor untuk membawa application context beserta id ke ViewModel constructor
-    public DetailedFavoriteViewModelFactory(Application application, int favoriteMovieId){
+    public DetailedFavoriteMovieViewModelFactory(Application application, int favoriteMovieId){
         mApplication = application;
         mFavoriteMovieId = favoriteMovieId;
     }

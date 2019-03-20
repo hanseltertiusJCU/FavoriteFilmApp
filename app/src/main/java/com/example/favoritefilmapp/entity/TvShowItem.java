@@ -82,7 +82,7 @@ public class TvShowItem implements Parcelable {
     public TvShowItem(Cursor cursor){
         // Method ini berguna untuk set variable values yang ada di column values
         this.tvShowId = getColumnInt(cursor, _ID);
-        this.tvShowName = getColumnString(cursor, FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_TABLE_NAME);
+        this.tvShowName = getColumnString(cursor, FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_NAME_COLUMN);
         this.tvShowRatings = getColumnString(cursor, FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_RATINGS_COLUMN);
         this.tvShowOriginalLanguage = getColumnString(cursor, FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_ORIGINAL_LANGUAGE_COLUMN);
         this.tvShowFirstAirDate = getColumnString(cursor, FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_FIRST_AIR_DATE_COLUMN);

@@ -2,14 +2,21 @@ package com.example.favoritefilmapp;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +28,12 @@ import android.widget.TextView;
 import com.example.favoritefilmapp.entity.MovieItem;
 import com.example.favoritefilmapp.entity.TvShowItem;
 import com.example.favoritefilmapp.factory.DetailedFavoriteTvShowViewModelFactory;
-import com.example.favoritefilmapp.factory.DetailedFavoriteViewModelFactory;
+import com.example.favoritefilmapp.factory.DetailedFavoriteMovieViewModelFactory;
 import com.example.favoritefilmapp.model.DetailedFavoriteMovieViewModel;
 import com.example.favoritefilmapp.model.DetailedFavoriteTvShowViewModel;
+import com.example.favoritefilmapp.observer.FavoriteMovieDataObserver;
+import com.example.favoritefilmapp.observer.FavoriteTvShowDataObserver;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,6 +43,24 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.provider.BaseColumns._ID;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_DATE_ADDED_FAVORITE_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_FAVORITE_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_FAVORITE_CONTENT_URI;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_FILE_PATH_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_ORIGINAL_LANGUAGE_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_RATINGS_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_RELEASE_DATE_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_TITLE_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_DATE_ADDED_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_FAVORITE_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_FAVORITE_CONTENT_URI;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_FILE_PATH_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_FIRST_AIR_DATE_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_NAME_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_ORIGINAL_LANGUAGE_COLUMN;
+import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_RATINGS_COLUMN;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -230,10 +258,10 @@ public class DetailActivity extends AppCompatActivity {
             if(networkInfo != null && networkInfo.isConnected()){
                 // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
                 // Buat ViewModel untuk detailedMovieInfo
-                DetailedFavoriteMovieViewModel detailedFavoriteMovieViewModel = ViewModelProviders.of(this, new DetailedFavoriteViewModelFactory(this.getApplication(), detailedMovieId)).get(DetailedFavoriteMovieViewModel.class);
+                DetailedFavoriteMovieViewModel detailedFavoriteMovieViewModel = ViewModelProviders.of(this, new DetailedFavoriteMovieViewModelFactory(this.getApplication(), detailedMovieId)).get(DetailedFavoriteMovieViewModel.class);
                 // Buat observer object untuk mendisplay data ke UI
                 // Buat Observer untuk detailedMovieInfo
-                Observer<ArrayList<MovieItem>> detailedFavoriteMovieObserver = createDetailedFavoriteMovieObserver(); // todo: make one
+                Observer<ArrayList<MovieItem>> detailedFavoriteMovieObserver = createDetailedFavoriteMovieObserver();
                 // Tempelkan Observer ke LiveData object
                 detailedFavoriteMovieViewModel.getDetailedFavoriteMovie().observe(this, detailedFavoriteMovieObserver);
             } else {
@@ -257,7 +285,7 @@ public class DetailActivity extends AppCompatActivity {
                 DetailedFavoriteTvShowViewModel detailedFavoriteTvShowViewModel = ViewModelProviders.of(this, new DetailedFavoriteTvShowViewModelFactory(this.getApplication(), detailedTvShowId)).get(DetailedFavoriteTvShowViewModel.class);
                 // Buat observer object untuk mendisplay data ke UI
                 // Buat Observer untuk detailedTvShowInfo
-                Observer<ArrayList<TvShowItem>> detailedFavoriteTvShowObserver = createDetailedFavoriteTvShowObserver(); // todo: make one
+                Observer<ArrayList<TvShowItem>> detailedFavoriteTvShowObserver = createDetailedFavoriteTvShowObserver();
                 // Tempelkan Observer ke LiveData object
                 detailedFavoriteTvShowViewModel.getDetailedFavoriteTvShow().observe(this, detailedFavoriteTvShowObserver);
             } else { // Kondisi jika tidak connected ke network
@@ -275,10 +303,104 @@ public class DetailActivity extends AppCompatActivity {
     // Buat observer method untuk favorite Movie yang gunanya untuk return observer object
     private Observer<ArrayList<MovieItem>> createDetailedFavoriteMovieObserver(){
         return new Observer<ArrayList<MovieItem>>() {
-            // Method tsb triggered ketika data changed
+            // Method tsb triggered ketika data changed dan gunanya itu untuk display data
             @Override
             public void onChanged(@Nullable ArrayList<MovieItem> movieItems) {
-                // todo: execute the code
+                // Ketika data selesai di load, maka kita akan mendapatkan data dan menghilangkan progress bar
+                // yang menandakan bahwa loadingnya sudah selesai
+                detailedInfoContent.setVisibility(View.VISIBLE);
+                detailedProgressBar.setVisibility(View.GONE);
+
+                // Cek jika array list tidak null
+                if(movieItems != null){
+                    // Load image jika ada poster path ke dalam image view
+                    Picasso.get().load(baseImageUrl + movieItems.get(0).getMoviePosterPath()).into(detailedItemPosterImage);
+
+                    // Cek jika ada value dari variable movie title
+                    if(movieItems.get(0).getMovieTitle() != null && !movieItems.get(0).getMovieTitle().isEmpty()){
+                        detailedFirstInfoTextView.setText(movieItems.get(0).getMovieTitle());
+                    } else {
+                        detailedFirstInfoTextView.setText(getString(R.string.detailed_movie_unknown_title)); // Set unknown placeholder value jika tidak ada value dari variable
+                    }
+
+                    // Set textview content in detailed movie rating to contain a variety of different colors
+                    Spannable ratingWord = new SpannableString(getString(R.string.span_movie_item_ratings) + " ");
+                    ratingWord.setSpan(new ForegroundColorSpan(Color.BLACK), 0, ratingWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    detailedSecondInfoTextView.setText(ratingWord);
+
+                    // Cek jika ada value dari variable movie ratings
+                    if(movieItems.get(0).getMovieRatings() != null && !movieItems.get(0).getMovieRatings().isEmpty()){
+                        Spannable ratingDetailedMovie = new SpannableString(movieItems.get(0).getMovieRatings());
+                        ratingDetailedMovie.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, ratingDetailedMovie.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedSecondInfoTextView.append(ratingDetailedMovie);
+                    } else {
+                        Spannable ratingDetailedMovie = new SpannableString(getString(R.string.detailed_movie_default_value_ratings)); // Set default value menjadi 0
+                        ratingDetailedMovie.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, ratingDetailedMovie.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedSecondInfoTextView.append(ratingDetailedMovie);
+                    }
+
+                    // Set textview content in detailed movie runtime to contain a variety of different colors
+                    Spannable runtimeWord = new SpannableString(getString(R.string.span_movie_detail_runtime) + " ");
+                    runtimeWord.setSpan(new ForegroundColorSpan(Color.BLACK), 0, runtimeWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    detailedThirdInfoTextView.setText(runtimeWord);
+
+                    // Cek jika ada value dari variable movie runtime
+                    if(movieItems.get(0).getMovieRuntime() != null && !movieItems.get(0).getMovieRuntime().isEmpty()){
+                        Spannable runtimeDetailedMovie = new SpannableString(movieItems.get(0).getMovieRuntime() + " ");
+                        runtimeDetailedMovie.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, runtimeDetailedMovie.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedThirdInfoTextView.append(runtimeDetailedMovie);
+
+                        Spannable runtimeDetailedMovieMinutes = new SpannableString(getString(R.string.span_movie_detail_runtime_minutes));
+                        runtimeDetailedMovieMinutes.setSpan(new ForegroundColorSpan(Color.BLACK), 0, runtimeDetailedMovieMinutes.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedThirdInfoTextView.append(runtimeDetailedMovieMinutes);
+                    } else {
+                        Spannable runtimeDetailedMovie = new SpannableString(getString(R.string.detailed_movie_unknown_runtime));
+                        runtimeDetailedMovie.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, runtimeDetailedMovie.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedThirdInfoTextView.append(runtimeDetailedMovie);
+                    }
+
+                    // Set title yg isinya original language
+                    detailedFourthInfoTitleTextView.setText(getString(R.string.detailed_movie_original_language_title));
+
+                    // Cek jika ada value dari variable movie original language
+                    if(movieItems.get(0).getMovieOriginalLanguage() != null && !movieItems.get(0).getMovieOriginalLanguage().isEmpty()){
+                        detailedFourthInfoTextView.setText(movieItems.get(0).getMovieOriginalLanguage());
+                    } else {
+                        detailedFourthInfoTextView.setText(getString(R.string.detailed_movie_unknown_original_language));
+                    }
+
+                    // Set title yg isinya release date
+                    detailedFifthInfoTitleTextView.setText(getString(R.string.detailed_movie_release_date_title));
+
+                    // Cek jika ada value dari variable movie release date
+                    if(movieItems.get(0).getMovieReleaseDate() != null && !movieItems.get(0).getMovieReleaseDate().isEmpty()){
+                        detailedFifthInfoTextView.setText(movieItems.get(0).getMovieReleaseDate());
+                    } else {
+                        detailedFifthInfoTextView.setText(getString(R.string.detailed_movie_unknown_release_date));
+                    }
+
+                    // Set title yg isinya movie overview
+                    detailedSixthInfoTitleTextView.setText(getString(R.string.detailed_movie_overview_title));
+
+                    // Cek jika ada value dari variable movie overview
+                    if(movieItems.get(0).getMovieOverview() != null && !movieItems.get(0).getMovieOverview().isEmpty()){
+                        detailedSixthInfoTextView.setText(movieItems.get(0).getMovieOverview());
+                    } else {
+                        detailedSixthInfoTextView.setText(getString(R.string.detailed_movie_unknown_overview));
+                    }
+
+                    // Cek jika ga ada uri
+                    if(uri == null){
+                        // Set custom class value bedasarkan object pertama di ArrayList
+                        detailedMovieItem = movieItems.get(0);
+                    }
+
+                    // Set menu clickable into true, literally setelah asynctask kelar,
+                    // maka menu bs d click
+                    menuClickable = true;
+                    // Update option menu to recall onPrepareOptionMenu method
+                    invalidateOptionsMenu();
+                }
             }
         };
     }
@@ -286,10 +408,103 @@ public class DetailActivity extends AppCompatActivity {
     // Buat observer method untuk favorite TV Show yang gunanya untuk return observer object
     private Observer<ArrayList<TvShowItem>> createDetailedFavoriteTvShowObserver(){
         return new Observer<ArrayList<TvShowItem>>() {
-            // Method tsb triggered ketika data changed
+            // Method tsb triggered ketika data changed dan gunanya itu untuk display data
             @Override
             public void onChanged(@Nullable ArrayList<TvShowItem> tvShowItems) {
-                // todo: execute the code
+                // Ketika data selesai di load, maka kita akan mendapatkan data dan menghilangkan progress bar
+                // yang menandakan bahwa loadingnya sudah selesai
+                detailedInfoContent.setVisibility(View.VISIBLE);
+                detailedProgressBar.setVisibility(View.GONE);
+
+                // Cek jika array list exist, ini gunanya untuk mencegah null pointer exception
+                if(tvShowItems != null){
+                    // Load image jika ada poster path ke dalam image view
+                    Picasso.get().load(baseImageUrl + tvShowItems.get(0).getTvShowPosterPath()).into(detailedItemPosterImage);
+
+                    // Cek jika ada value dari variable tv show name
+                    if(tvShowItems.get(0).getTvShowName() != null && !tvShowItems.get(0).getTvShowName().isEmpty()){
+                        detailedFirstInfoTextView.setText(tvShowItems.get(0).getTvShowName());
+                    } else {
+                        detailedFirstInfoTextView.setText(getString(R.string.detailed_tv_show_unknown_name)); // Set unknown placeholder value jika tidak ada value dari variable
+                    }
+
+                    // Set textview content in detailed tv show rating to contain a variety of different colors
+                    Spannable ratingWord = new SpannableString(getString(R.string.span_tv_show_item_ratings) + " ");
+                    ratingWord.setSpan(new ForegroundColorSpan(Color.BLACK), 0, ratingWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    detailedSecondInfoTextView.setText(ratingWord);
+
+                    // Cek jika ada value dari variable tv show ratings
+                    if(tvShowItems.get(0).getTvShowRatings() != null && !tvShowItems.get(0).getTvShowRatings().isEmpty()){
+                        Spannable ratingDetailedTvShow = new SpannableString(tvShowItems.get(0).getTvShowRatings());
+                        ratingDetailedTvShow.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, ratingDetailedTvShow.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedSecondInfoTextView.append(ratingDetailedTvShow);
+                    } else {
+                        Spannable ratingDetailedTvShow = new SpannableString(getString(R.string.detailed_tv_show_default_value_ratings)); // Set default value menjadi 0
+                        ratingDetailedTvShow.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, ratingDetailedTvShow.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedSecondInfoTextView.append(ratingDetailedTvShow);
+                    }
+
+                    // Set textview content in detailed movie runtime to contain a variety of different colors
+                    Spannable runtimeWord = new SpannableString(getString(R.string.span_tv_show_detail_runtime_episodes) + " ");
+                    runtimeWord.setSpan(new ForegroundColorSpan(Color.BLACK), 0, runtimeWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    detailedThirdInfoTextView.setText(runtimeWord);
+
+                    // Cek jika ada value dari variable tv show runtime episodes
+                    if(tvShowItems.get(0).getTvShowRuntimeEpisodes() != null && !tvShowItems.get(0).getTvShowRuntimeEpisodes().isEmpty()){
+                        Spannable runtimeDetailedTvShow = new SpannableString(tvShowItems.get(0).getTvShowRuntimeEpisodes() + " ");
+                        runtimeDetailedTvShow.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, runtimeDetailedTvShow.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedThirdInfoTextView.append(runtimeDetailedTvShow);
+
+                        Spannable runtimeDetailedTvShowMinutes = new SpannableString(getString(R.string.span_tv_show_detail_runtime_episodes_minutes));
+                        runtimeDetailedTvShowMinutes.setSpan(new ForegroundColorSpan(Color.BLACK), 0, runtimeDetailedTvShowMinutes.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedThirdInfoTextView.append(runtimeDetailedTvShowMinutes);
+                    } else {
+                        Spannable runtimeDetailedTvShow = new SpannableString(getString(R.string.detailed_tv_show_unknown_episodes_runtime));
+                        runtimeDetailedTvShow.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, runtimeDetailedTvShow.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        detailedThirdInfoTextView.append(runtimeDetailedTvShow);
+                    }
+
+                    // Set title yg isinya original language
+                    detailedFourthInfoTitleTextView.setText(getString(R.string.detailed_tv_show_original_language_title));
+
+                    // Cek jika ada value dari variable tv show original language
+                    if(tvShowItems.get(0).getTvShowOriginalLanguage() != null && !tvShowItems.get(0).getTvShowOriginalLanguage().isEmpty()){
+                        detailedFourthInfoTextView.setText(tvShowItems.get(0).getTvShowOriginalLanguage());
+                    } else {
+                        detailedFourthInfoTextView.setText(getString(R.string.detailed_tv_show_unknown_original_language));
+                    }
+
+                    // Set title yg isinya first air date
+                    detailedFifthInfoTitleTextView.setText(getString(R.string.detailed_tv_show_first_air_date_title));
+
+                    // Cek jika ada value dari variable tv show first air date
+                    if(tvShowItems.get(0).getTvShowFirstAirDate() != null && !tvShowItems.get(0).getTvShowFirstAirDate().isEmpty()){
+                        detailedFifthInfoTextView.setText(tvShowItems.get(0).getTvShowFirstAirDate());
+                    } else {
+                        detailedFifthInfoTextView.setText(getString(R.string.detailed_tv_show_unknown_first_air_date));
+                    }
+
+                    // Set title yg isinya tv show overview
+                    detailedSixthInfoTitleTextView.setText(getString(R.string.detailed_tv_show_overview_title));
+
+                    // Cek jika ada value dari variable tv show overview
+                    if(tvShowItems.get(0).getTvShowOverview() != null && !tvShowItems.get(0).getTvShowOverview().isEmpty()){
+                        detailedSixthInfoTextView.setText(tvShowItems.get(0).getTvShowOverview());
+                    } else {
+                        detailedSixthInfoTextView.setText(getString(R.string.detailed_tv_show_unknown_overview));
+                    }
+
+                    // Cek jika ga ada uri yang exist
+                    if(uri == null){
+                        // Set custom class value bedasarkan object pertama di ArrayList
+                        detailedTvShowItem = tvShowItems.get(0);
+                    }
+
+                    menuClickable = true;
+
+                    invalidateOptionsMenu();
+                }
+
             }
         };
     }
@@ -320,7 +535,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         } else if(accessItemMode.equals("open_tv_show_detail")){
             // Cek jika value booleannya itu adalah true, yang berarti menandakan movie favorite
-            if(detailedMovieFavoriteStateValue == 1){
+            if(detailedTvShowFavoriteStateValue == 1){
                 // Set drawable resource
                 drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_on;
             } else {
@@ -335,7 +550,151 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // todo: execute code
+        // Create new Intent object
+        Intent resultIntent = new Intent();
+
+        switch (item.getItemId()){
+            case R.id.action_marked_as_favorite:
+                if(accessItemMode.equals("open_movie_detail")){
+                    // Check for current state for drawable menu icon
+                    if(detailedMovieFavoriteStateValue != 1){
+                        // Change icon into marked as favorite
+                        drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_on;
+                        // Set value state into marked as favorite
+                        detailedMovieFavoriteStateValue = 1;
+                        // Set current date value into MovieItem, where MovieItem added into Favorite
+                        detailedMovieItem.setDateAddedFavorite(getCurrentDate());
+                        // Set boolean state value into MovieItem
+                        detailedMovieItem.setFavoriteBooleanState(detailedMovieFavoriteStateValue);
+
+                        // Cek jika value dari detailedMovieFavoriteStateValue sama dengan value bawaan intent dengan key FAVORITE_MOVIE_BOOLEAN_STATE_DATA
+                        changedState = detailedMovieFavoriteStateValue != detailedMovieFavoriteStateValueComparison; // is changed true jika value favorite state bawaan intent itu tidak sama dengan value favorite state
+
+                        // Initiate ContentValues object
+                        ContentValues favoriteMovieColumnValues = new ContentValues();
+                        // Put column values in content values
+                        favoriteMovieColumnValues.put(_ID, detailedMovieItem.getMovieId());
+                        favoriteMovieColumnValues.put(MOVIE_TITLE_COLUMN, detailedMovieItem.getMovieTitle());
+                        favoriteMovieColumnValues.put(MOVIE_RATINGS_COLUMN, detailedMovieItem.getMovieRatings());
+                        favoriteMovieColumnValues.put(MOVIE_ORIGINAL_LANGUAGE_COLUMN, detailedMovieItem.getMovieOriginalLanguage());
+                        favoriteMovieColumnValues.put(MOVIE_RELEASE_DATE_COLUMN, detailedMovieItem.getMovieReleaseDate());
+                        favoriteMovieColumnValues.put(MOVIE_FILE_PATH_COLUMN, detailedMovieItem.getMoviePosterPath());
+                        favoriteMovieColumnValues.put(MOVIE_DATE_ADDED_FAVORITE_COLUMN, detailedMovieItem.getDateAddedFavorite());
+                        favoriteMovieColumnValues.put(MOVIE_FAVORITE_COLUMN, detailedMovieItem.getFavoriteBooleanState());
+
+                        // Cek jika ada pergantian state dari sebuah data
+                        if(changedState){
+                            uri = getContentResolver().insert(MOVIE_FAVORITE_CONTENT_URI, favoriteMovieColumnValues); // Insert column into content provider through content resolver and return uri
+                            detailedMovieFavoriteStateValueComparison = 1; // Ganti value untuk mengupdate comparison
+                            // Cek jika uri itu exist
+                            if(uri != null){
+                                getContentResolver().notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                                // Bawa nilai ke intent
+                                resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
+                                setResult(RESULT_CHANGE, resultIntent); // Set result that brings result code and intent
+                            }
+                        }
+
+                        // Update option menu
+                        invalidateOptionsMenu();
+                    } else { // Code ini dieksekusi jika value statenya itu sama dengan 1
+                        // Change icon into unmarked as favorite
+                        drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_off;
+                        // Set value state into unmarked as favorite
+                        detailedMovieFavoriteStateValue = 0;
+                        // Set boolean state value into MovieItem
+                        detailedMovieItem.setFavoriteBooleanState(detailedMovieFavoriteStateValue);
+
+                        // Cek jika value dari detailedMovieFavoriteStateValue sama dengan value bawaan intent dengan key FAVORITE_MOVIE_BOOLEAN_STATE_DATA
+                        changedState = detailedMovieFavoriteStateValue != detailedMovieFavoriteStateValueComparison; // is changed true jika value favorite state bawaan intent itu tidak sama dengan value favorite state
+                        // Cek jika ada pergantian state dari sebuah data
+                        if(changedState){
+                            int deletedIdItem = getContentResolver().delete(uri, null, null); // Delete column based on inserted URI item into content provider through content resolver
+                            detailedMovieFavoriteStateValueComparison = 0; // Ganti value untuk comparison value, agar dapat menghandle changed state boolean
+                            if(deletedIdItem > 0){
+                                getContentResolver().notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                                // Bawa nilai ke intent
+                                resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
+                                setResult(RESULT_CHANGE, resultIntent); // Set result that brings result code and intent, which is called in onactivity result
+                            }
+                        }
+
+                        // Update option menu
+                        invalidateOptionsMenu();
+                    }
+                } else if(accessItemMode.equals("open_tv_show_detail")){ // Statement code jika mode intentnya berada di TV Show
+                    if(detailedTvShowFavoriteStateValue != 1){
+                        // Change icon into marked as favorite
+                        drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_on;
+                        // Set value state into marked as favorite
+                        detailedTvShowFavoriteStateValue = 1;
+                        // Set current date value into TvShowItem, where TvShowItem added into Favorite
+                        detailedTvShowItem.setDateAddedFavorite(getCurrentDate());
+                        // Set boolean state value into TvShowItem
+                        detailedTvShowItem.setFavoriteBooleanState(detailedTvShowFavoriteStateValue);
+
+                        // Cek jika value dari detailedMovieFavoriteStateValue sama dengan value bawaan intent dengan key FAVORITE_TV_SHOW_BOOLEAN_STATE_DATA
+                        changedState = detailedTvShowFavoriteStateValue != detailedTvShowFavoriteStateValueComparison; // is changed true jika value favorite state bawaan intent itu tidak sama dengan value favorite state
+
+                        // Initiate ContentValues object
+                        ContentValues favoriteTvShowColumnValues = new ContentValues();
+                        // Put column values in content values
+                        favoriteTvShowColumnValues.put(_ID, detailedTvShowItem.getTvShowId());
+                        favoriteTvShowColumnValues.put(TV_SHOW_NAME_COLUMN, detailedTvShowItem.getTvShowName());
+                        favoriteTvShowColumnValues.put(TV_SHOW_RATINGS_COLUMN, detailedTvShowItem.getTvShowRatings());
+                        favoriteTvShowColumnValues.put(TV_SHOW_ORIGINAL_LANGUAGE_COLUMN, detailedTvShowItem.getTvShowOriginalLanguage());
+                        favoriteTvShowColumnValues.put(TV_SHOW_FIRST_AIR_DATE_COLUMN, detailedTvShowItem.getTvShowFirstAirDate());
+                        favoriteTvShowColumnValues.put(TV_SHOW_FILE_PATH_COLUMN, detailedTvShowItem.getTvShowPosterPath());
+                        favoriteTvShowColumnValues.put(TV_SHOW_DATE_ADDED_COLUMN, detailedTvShowItem.getDateAddedFavorite());
+                        favoriteTvShowColumnValues.put(TV_SHOW_FAVORITE_COLUMN, detailedTvShowItem.getFavoriteBooleanState());
+
+                        // Cek jika ada pergantian state dari sebuah data
+                        if(changedState){
+                            uri = getContentResolver().insert(TV_SHOW_FAVORITE_CONTENT_URI, favoriteTvShowColumnValues);
+                            detailedTvShowFavoriteStateValueComparison = 1; // Ganti value untuk mengupdate comparison
+                            // Cek jika urinya ada
+                            if(uri != null){
+                                getContentResolver().notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                                // Bawa nilai ke intent
+                                resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
+                                setResult(RESULT_CHANGE, resultIntent); // Set result that brings result code and intent, which is called in onactivity result
+                            }
+                        }
+
+                        // Update option menu
+                        invalidateOptionsMenu();
+                    } else {
+                        // Change icon into unmarked as favorite
+                        drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_off;
+                        // Set value state into unmarked as favorite
+                        detailedTvShowFavoriteStateValue = 0;
+                        // Set boolean state value into TvShowItem
+                        detailedTvShowItem.setFavoriteBooleanState(detailedTvShowFavoriteStateValue);
+                        // Cek jika value dari detailedTvShowFavoriteStateValue sama dengan value bawaan intent dengan key TV_SHOW_BOOLEAN_STATE_EXTRA
+                        changedState = detailedTvShowFavoriteStateValue != detailedTvShowFavoriteStateValueComparison; // is changed true jika value favorite state bawaan intent itu tidak sama dengan value favorite state
+                        // Cek jika ada pergantian state dari sebuah data
+                        if(changedState){
+                            int deletedIdItem = getContentResolver().delete(uri, null, null);
+                            detailedTvShowFavoriteStateValueComparison = 0; // Ganti value untuk mengupdate comparison
+                            // Cek jika ada item yang didelete
+                            if(deletedIdItem > 0){
+                                getContentResolver().notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                                // Bawa nilai ke intent
+                                resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
+                                setResult(RESULT_CHANGE, resultIntent); // Set result that brings result code and intent, which is called in onactivity result
+                            }
+                        }
+
+                        // Update option menu
+                        invalidateOptionsMenu();
+                    }
+                }
+            case R.id.home:
+                // Finish method untuk membawa Intent ke MainActivity
+                finish();
+            default:
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 

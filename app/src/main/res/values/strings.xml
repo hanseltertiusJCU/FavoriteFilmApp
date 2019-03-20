@@ -11,6 +11,16 @@
     <string name="span_tv_show_item_language">Language :</string>
     <string name="span_tv_show_item_first_air_date">First Air Date :</string>
 
+    <!-- Set Span detailed movie item section title -->
+    <string name="span_movie_detail_rating">Rating :</string>
+    <string name="span_movie_detail_runtime">Runtime :</string>
+    <string name="span_movie_detail_runtime_minutes">minute(s)</string>
+
+    <!-- Set Span detailed TV Show item section title -->
+    <string name="span_tv_show_detail_rating">Rating :</string>
+    <string name="span_tv_show_detail_runtime_episodes">Episodes Runtime :</string>
+    <string name="span_tv_show_detail_runtime_episodes_minutes">minute(s)</string>
+
     <!-- Set values for Movie data placeholder in Fragment Favorite Movie -->
     <string name="movie_title_text">Movie Title</string>
     <string name="movie_ratings_text">Ratings</string>
