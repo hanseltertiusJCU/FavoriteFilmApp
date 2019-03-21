@@ -174,8 +174,7 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
         intentWithFavoriteMovieIdData.putExtra(BuildConfig.FAVORITE_MODE_INTENT, favoriteModeItem);
         // Set URI into intent
         intentWithFavoriteMovieIdData.setData(favoriteMovieUriItem);
-        // Start activity to trigger onActivityResult when going back
-        startActivityForResult(intentWithFavoriteMovieIdData, DetailActivity.REQUEST_CHANGE);
+        startActivity(intentWithFavoriteMovieIdData);
     }
 
     @Override
@@ -218,26 +217,4 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
         outState.putParcelableArrayList(BuildConfig.FAVORITE_MOVIE_LIST_STATE, movieItemAdapter.getMovieItemData());
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Cek jika Intent itu ada
-        if(data != null) {
-            // Check for correct request code
-            if(requestCode == DetailActivity.REQUEST_CHANGE) {
-                // Check for result code
-                if(resultCode == DetailActivity.RESULT_CHANGE) {
-                    boolean changedDataState = data.getBooleanExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, false);
-                    // Cek jika ada perubahan di tv show item data state
-                    if(changedDataState) {
-                        // Execute AsyncTask kembali
-                        new LoadFavoriteMoviesAsync(getActivity(), this).execute();
-                        // Reset scroll position ke paling atas
-                        recyclerViewFavoriteMovieItems.smoothScrollToPosition(0);
-                    }
-                }
-            }
-        }
-
-    }
 }

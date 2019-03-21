@@ -94,11 +94,6 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.detailed_info_content)
     LinearLayout detailedInfoContent;
 
-    // Request code
-    public static final int REQUEST_CHANGE = 100;
-    // Result code
-    public static final int RESULT_CHANGE = 200;
-
     /*
     * Line tsb berguna untuk setup variable
     * */
@@ -192,11 +187,6 @@ public class DetailActivity extends AppCompatActivity {
                     } else {
                         detailedMovieFavoriteStateValueComparison = 0;
                     }
-                    Intent resultIntent = new Intent();
-                    // Put extra ke intent
-                    resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
-                    // Set result untuk menghandle onActivityResult
-                    setResult(RESULT_CHANGE, resultIntent);
                 }
             } else if(accessItemMode.equals("open_tv_show_detail")) {
                 detailedTvShowFavoriteStateValue = savedInstanceState.getInt(BuildConfig.KEY_DRAWABLE_MARKED_AS_FAVORITE);
@@ -214,11 +204,6 @@ public class DetailActivity extends AppCompatActivity {
                     } else {
                         detailedTvShowFavoriteStateValueComparison = 0;
                     }
-                    Intent resultIntent = new Intent();
-                    // Put extra ke intent
-                    resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
-                    // Set result untuk menghandle onActivityResult
-                    setResult(RESULT_CHANGE, resultIntent);
                 }
             }
         } else { // Jika tidak ada bundle savedinstance state
@@ -550,9 +535,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Create new Intent object
-        Intent resultIntent = new Intent();
-
+        // Cek untuk menu item id yang tepat
         switch (item.getItemId()){
             case R.id.action_marked_as_favorite:
                 if(accessItemMode.equals("open_movie_detail")){
@@ -589,9 +572,6 @@ public class DetailActivity extends AppCompatActivity {
                             // Cek jika uri itu exist
                             if(uri != null){
                                 getContentResolver().notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
-                                // Bawa nilai ke intent
-                                resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
-                                setResult(RESULT_CHANGE, resultIntent); // Set result that brings result code and intent
                             }
                         }
 
@@ -613,9 +593,6 @@ public class DetailActivity extends AppCompatActivity {
                             detailedMovieFavoriteStateValueComparison = 0; // Ganti value untuk comparison value, agar dapat menghandle changed state boolean
                             if(deletedIdItem > 0){
                                 getContentResolver().notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
-                                // Bawa nilai ke intent
-                                resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
-                                setResult(RESULT_CHANGE, resultIntent); // Set result that brings result code and intent, which is called in onactivity result
                             }
                         }
 
@@ -655,9 +632,6 @@ public class DetailActivity extends AppCompatActivity {
                             // Cek jika urinya ada
                             if(uri != null){
                                 getContentResolver().notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
-                                // Bawa nilai ke intent
-                                resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
-                                setResult(RESULT_CHANGE, resultIntent); // Set result that brings result code and intent, which is called in onactivity result
                             }
                         }
 
@@ -679,9 +653,6 @@ public class DetailActivity extends AppCompatActivity {
                             // Cek jika ada item yang didelete
                             if(deletedIdItem > 0){
                                 getContentResolver().notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
-                                // Bawa nilai ke intent
-                                resultIntent.putExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
-                                setResult(RESULT_CHANGE, resultIntent); // Set result that brings result code and intent, which is called in onactivity result
                             }
                         }
 
@@ -689,9 +660,11 @@ public class DetailActivity extends AppCompatActivity {
                         invalidateOptionsMenu();
                     }
                 }
+                break;
             case R.id.home:
                 // Finish method untuk membawa Intent ke MainActivity
                 finish();
+                break;
             default:
                 break;
         }

@@ -6,8 +6,10 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.favoritefilmapp.async.LoadFavoriteMoviesAsync;
@@ -111,13 +113,43 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     // Implement method dari interface load favorite movie
     @Override
     public void favoriteMoviePostExecute(Cursor favoriteMovieItems) {
+        // make array list value based on cursor
         favoriteMovieItemArray = mapCursorToFavoriteMovieArrayList(favoriteMovieItems);
-        // todo: fragment detatch then attach
+        // Make favorite movie fragment value to be the same fragment as fragment instantiated above
+        Fragment favoriteMovieFragment = getSupportFragmentManager().findFragmentByTag(FavoriteMovieFragment.class.getSimpleName());
+        // Initiate fragment transaction untuk melakukan fragment operation
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        // cek jika fragment nya itu ada
+        if(favoriteMovieFragment != null){
+            // cek jika fragment di attach ke activity
+            if(favoriteMovieFragment.isAdded()){
+                fragmentTransaction.detach(favoriteMovieFragment); // detatch fragment existing
+                fragmentTransaction.attach(favoriteMovieFragment); // attatch fragment baru
+                fragmentTransaction.commitAllowingStateLoss(); // commit fragment transaction untuk display dan gunakan method tsb biar mencegah illegal state exception
+            }
+        }
+
+
     }
 
     // Implement method dari interface load favorite tv show
     @Override
     public void favoriteTvShowPostExecute(Cursor favoriteTvShowItems) {
+        // make array list value based on cursor
         favoriteTvShowItemArray = mapCursorToFavoriteTvShowArrayList(favoriteTvShowItems);
+        // Make favorite tv show fragment value to be the same fragment as fragment instantiated above
+        Fragment favoriteTvShowFragment = getSupportFragmentManager().findFragmentByTag(FavoriteTvShowFragment.class.getSimpleName());
+        // Initiate fragment transaction untuk melakukan fragment operation
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        // Cek jika fragmentnya itu ada
+        if(favoriteTvShowFragment != null){
+            // Cek jika fragment di attach ke activity
+            if(favoriteTvShowFragment.isAdded()){
+                fragmentTransaction.detach(favoriteTvShowFragment); // detatch fragment lama
+                fragmentTransaction.attach(favoriteTvShowFragment); // attach fragment baru
+                fragmentTransaction.commitAllowingStateLoss(); // commit fragment transaction untuk display dan gunakan method tsb biar mencegah illegal state exception
+            }
+        }
+
     }
 }

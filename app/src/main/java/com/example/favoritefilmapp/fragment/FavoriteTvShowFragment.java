@@ -144,8 +144,8 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
                 // Progress bar into gone and recycler view into invisible as the data finished on loading
                 progressBar.setVisibility(View.GONE);
                 recyclerViewFavoriteTvShowItems.setVisibility(View.INVISIBLE);
-                // Set empty view visibility into visible
-                recyclerViewFavoriteTvShowItems.setVisibility(View.VISIBLE);
+                // Set empty text view visibility into visible
+                textViewFavoriteTvShowEmptyState.setVisibility(View.VISIBLE);
                 // Empty text view yg menunjukkan bahwa tidak ada internet yang sedang terhubung
                 textViewFavoriteTvShowEmptyState.setText(getString(R.string.no_internet_connection));
             }
@@ -172,8 +172,8 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
         intentWithFavoriteTvShowIdData.putExtra(BuildConfig.FAVORITE_MODE_INTENT, favoriteModeItem);
         // Set URI into intent
         intentWithFavoriteTvShowIdData.setData(favoriteTvShowUriItem);
-        // Start activity to trigger onActivityResult when going back
-        startActivityForResult(intentWithFavoriteTvShowIdData, DetailActivity.REQUEST_CHANGE);
+        // Start activity to detail activity
+        startActivity(intentWithFavoriteTvShowIdData);
     }
 
     @Override
@@ -206,25 +206,4 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
         outState.putParcelableArrayList(BuildConfig.FAVORITE_TV_SHOW_LIST_STATE, tvShowItemAdapter.getTvShowItemData());
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Cek jika Intent itu ada
-        if(data != null) {
-            // Check for correct request code
-            if(requestCode == DetailActivity.REQUEST_CHANGE) {
-                // Check for result code
-                if(resultCode == DetailActivity.RESULT_CHANGE) {
-                    boolean changedDataState = data.getBooleanExtra(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, false);
-                    // Cek jika ada perubahan di tv show item data state
-                    if(changedDataState) {
-                        // Execute AsyncTask kembali
-                        new LoadFavoriteTvShowAsync(getActivity(), this).execute();
-                        // Reset scroll position ke paling atas
-                        recyclerViewFavoriteTvShowItems.smoothScrollToPosition(0);
-                    }
-                }
-            }
-        }
-    }
 }
