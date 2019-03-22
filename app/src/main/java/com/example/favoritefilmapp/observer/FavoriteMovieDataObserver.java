@@ -9,7 +9,7 @@ import com.example.favoritefilmapp.async.LoadFavoriteMoviesAsync;
 
 // Class ini berguna untuk memantau ada perubahan data di ContentResolver
 public class FavoriteMovieDataObserver extends ContentObserver {
-    private Context context;
+    final Context context;
 
     /**
      * Creates a content observer.
