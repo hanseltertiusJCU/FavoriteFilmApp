@@ -3,6 +3,7 @@ package com.example.favoritefilmapp;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -85,6 +86,25 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
 
         favoriteFilmBottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener); // Set event listener ke BottomNavigationView
 
+        // Initiate handler thread operation in Movie
+        HandlerThread movieHandlerThread = new HandlerThread("FavoriteMovieDataObserver"); // Initiate HandlerThread
+        movieHandlerThread.start();
+
+        Handler movieHandler = new Handler(movieHandlerThread.getLooper()); // Initiate Handler
+        FavoriteMovieDataObserver myFavoriteMovieObserver = new FavoriteMovieDataObserver(movieHandler, this); // Initiate ContentObserver
+        Log.d("movie looper", String.valueOf(movieHandlerThread.getLooper()));
+        getContentResolver().registerContentObserver(MOVIE_FAVORITE_CONTENT_URI, true, myFavoriteMovieObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
+
+        // Initiate handler thread operation in TV Show
+        HandlerThread tvShowHandlerThread = new HandlerThread("FavoriteTvShowDataObserver"); // Initiate HandlerThread
+        tvShowHandlerThread.start();
+
+        Handler tvShowHandler = new Handler(tvShowHandlerThread.getLooper()); // Initiate Handler
+        Log.d("tv show looper", String.valueOf(tvShowHandlerThread.getLooper()));
+        FavoriteTvShowDataObserver myFavoriteTvShowObserver = new FavoriteTvShowDataObserver(tvShowHandler, this); // Initiate ContentObserver
+
+        getContentResolver().registerContentObserver(TV_SHOW_FAVORITE_CONTENT_URI, true, myFavoriteTvShowObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
+
         // Cek jika bundle tidak ada alias saat pertama kali activity tercipta
         if(savedInstanceState == null){
             favoriteFilmBottomNavigationView.setSelectedItemId(R.id.navigation_favorite_movie); // Set default navigation
@@ -92,22 +112,6 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
             new LoadFavoriteMoviesAsync(this, this).execute();
             new LoadFavoriteTvShowAsync(this, this).execute();
         }
-
-        // Initiate handler thread operation in Movie
-        HandlerThread movieHandlerThread = new HandlerThread("FavoriteMovieDataObserver"); // Initiate HandlerThread
-        movieHandlerThread.start();
-        Handler movieHandler = new Handler(movieHandlerThread.getLooper()); // Initiate Handler
-        FavoriteMovieDataObserver myFavoriteMovieObserver = new FavoriteMovieDataObserver(movieHandler, this); // Initiate ContentObserver
-        getContentResolver().registerContentObserver(MOVIE_FAVORITE_CONTENT_URI, true, myFavoriteMovieObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
-
-        // Initiate handler thread operation in TV Show
-        HandlerThread tvShowHandlerThread = new HandlerThread("FavoriteTvShowDataObserver"); // Initiate HandlerThread
-        tvShowHandlerThread.start();
-        Handler tvShowHandler = new Handler(tvShowHandlerThread.getLooper()); // Initiate Handler
-        FavoriteTvShowDataObserver myFavoriteTvShowObserver = new FavoriteTvShowDataObserver(tvShowHandler, this); // Initiate ContentObserver
-        getContentResolver().registerContentObserver(TV_SHOW_FAVORITE_CONTENT_URI, true, myFavoriteTvShowObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
-
-
     }
 
     // Implement method dari interface load favorite movie

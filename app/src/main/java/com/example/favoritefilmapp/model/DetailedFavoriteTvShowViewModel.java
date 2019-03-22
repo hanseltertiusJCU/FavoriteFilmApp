@@ -78,13 +78,6 @@ public class DetailedFavoriteTvShowViewModel extends AndroidViewModel {
                     syncHttpClient.get(detailedFavoriteTvShowUrl, new AsyncHttpResponseHandler() {
 
                         @Override
-                        public void onStart() {
-                            super.onStart();
-                            // Set ke synchronous
-                            setUseSynchronousMode(true);
-                        }
-
-                        @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                             try{
                                 // Create JSON Object
