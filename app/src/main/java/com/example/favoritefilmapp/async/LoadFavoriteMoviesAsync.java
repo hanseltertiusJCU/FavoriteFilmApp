@@ -25,6 +25,12 @@ public class LoadFavoriteMoviesAsync extends AsyncTask<Void, Void, Cursor> {
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        weakCallback.get().favoriteMoviePreExecute();
+    }
+
+    @Override
     protected Cursor doInBackground(Void... voids) {
         Context context = weakContext.get();
         return context.getContentResolver().query(MOVIE_FAVORITE_CONTENT_URI, null, null, null, null); // Mengakses content resolver dari context yang menggunakan asynctask agar URI dapat dioper ke ContentProvider

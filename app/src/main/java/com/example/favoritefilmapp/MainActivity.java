@@ -39,11 +39,14 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     BottomNavigationView favoriteFilmBottomNavigationView;
 
     // Initiate ArrayList that takes up MovieItem and TvShowItem
-    public static ArrayList<MovieItem> favoriteMovieItemArray;
-    public static ArrayList<TvShowItem> favoriteTvShowItemArray;
+    public static ArrayList<MovieItem> favoriteMovieItemArray = new ArrayList<>(); // Initiate array list object that shows favorite movie item
+    public static ArrayList<TvShowItem> favoriteTvShowItemArray = new ArrayList<>(); // Initiate array list object that shows favorite tv show item
 
     // Create fragment object
     Fragment fragment;
+
+    // String untuk menampung action bar title
+    String actionBarTitle;
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -58,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
                             .commit(); // commit transaction
                     // Cek jika action bar exist
                     if(getSupportActionBar() != null){
-                        getSupportActionBar().setTitle(getString(R.string.favorite_movie)); // Set action bar title sesuai dengan fragment tertentu
+                        actionBarTitle = getString(R.string.favorite_movie); // Set action bar value
+                        getSupportActionBar().setTitle(actionBarTitle); // Set action bar title sesuai dengan fragment tertentu
                     }
                     return true;
                 case R.id.navigation_favorite_tv_show: // Line code jika menu item id adalah navigation_favorite_tv_show
@@ -68,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
                             .commit(); // commit transaction
                     // Cek jika action bar exist
                     if(getSupportActionBar() != null){
-                        getSupportActionBar().setTitle(getString(R.string.favorite_tv_show)); // Set action bar title sesuai dengan fragment tertentu
+                        actionBarTitle = getString(R.string.favorite_tv_show); // Set action bar value
+                        getSupportActionBar().setTitle(actionBarTitle); // Set action bar title sesuai dengan fragment tertentu
                     }
                     return true;
             }
@@ -111,7 +116,22 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
             // Load async task for getting the Cursor in favorite Movies and TV Show
             new LoadFavoriteMoviesAsync(this, this).execute();
             new LoadFavoriteTvShowAsync(this, this).execute();
+        } else {
+            if(getSupportActionBar() != null){
+                actionBarTitle = savedInstanceState.getString(BuildConfig.ACTION_BAR_TITLE); // Get value from savedinstancestate
+                getSupportActionBar().setTitle(actionBarTitle); // Set action bar title
+            }
         }
+    }
+
+    @Override
+    public void favoriteMoviePreExecute() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(MainActivity.class.getSimpleName(), "Favorite Movie data loading"); // Log message untuk load favorite movie data
+            }
+        });
     }
 
     // Implement method dari interface load favorite movie
@@ -136,6 +156,16 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
 
     }
 
+    @Override
+    public void favoriteTvShowPreExecute() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(MainActivity.class.getSimpleName(), "Favorite TV Show data loading"); // Log message untuk load favorite TV Show data
+            }
+        });
+    }
+
     // Implement method dari interface load favorite tv show
     @Override
     public void favoriteTvShowPostExecute(Cursor favoriteTvShowItems) {
@@ -155,5 +185,11 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
             }
         }
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(BuildConfig.ACTION_BAR_TITLE, actionBarTitle);
     }
 }

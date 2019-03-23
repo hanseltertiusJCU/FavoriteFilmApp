@@ -92,10 +92,10 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Set visibility of views ketika sedang dalam memuat data
-        recyclerViewFavoriteTvShowItems.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        textViewFavoriteTvShowEmptyState.setVisibility(View.GONE);
+//        // Set visibility of views ketika sedang dalam memuat data
+//        recyclerViewFavoriteTvShowItems.setVisibility(View.INVISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
+//        textViewFavoriteTvShowEmptyState.setVisibility(View.GONE);
         // Cek jika bundle savedInstanceState itu ada
         if(savedInstanceState != null) {
             // Retrieve array list parcelable untuk retrieve scroll position
@@ -177,6 +177,21 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
     }
 
     @Override
+    public void favoriteTvShowPreExecute() {
+        if(getActivity() != null){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Set visibility of views ketika sedang dalam memuat data
+                    recyclerViewFavoriteTvShowItems.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    textViewFavoriteTvShowEmptyState.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
+    @Override
     public void favoriteTvShowPostExecute(Cursor favoriteTvShowItems) {
         // Cek jika array list ada data
         if(MainActivity.favoriteTvShowItemArray.size() > 0){
@@ -196,6 +211,16 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
                     showSelectedFavoriteTvShowItems(MainActivity.favoriteTvShowItemArray.get(position)); // Call method untuk pindah ke detail activity bedasarkan MovieItem object di certain position yang ada di ArrayList
                 }
             });
+        } else {
+            // Ketika tidak ada data untuk display, set RecyclerView ke
+            // invisible dan progress bar menjadi tidak ada
+            tvShowItemAdapter.setTvShowItemData(MainActivity.favoriteTvShowItemArray);
+            progressBar.setVisibility(View.GONE);
+            recyclerViewFavoriteTvShowItems.setVisibility(View.INVISIBLE);
+            // Set empty view visibility into visible, krn merepresentasikan empty data
+            textViewFavoriteTvShowEmptyState.setVisibility(View.VISIBLE);
+            // Set empty view text
+            textViewFavoriteTvShowEmptyState.setText(getString(R.string.no_favorite_tv_show_data_shown));
         }
     }
 

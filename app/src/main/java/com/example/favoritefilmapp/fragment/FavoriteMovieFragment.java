@@ -93,10 +93,10 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Set visibility of views ketika sedang dalam memuat data
-        recyclerViewFavoriteMovieItems.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        textViewFavoriteMovieEmptyState.setVisibility(View.GONE);
+//        // Set visibility of views ketika sedang dalam memuat data
+//        recyclerViewFavoriteMovieItems.setVisibility(View.INVISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
+//        textViewFavoriteMovieEmptyState.setVisibility(View.GONE);
         // Cek jika bundle savedInstanceState itu ada
         if(savedInstanceState != null) {
             // Retrieve array list parcelable
@@ -178,6 +178,21 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
     }
 
     @Override
+    public void favoriteMoviePreExecute() {
+        if(getActivity() != null){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Set visibility of views ketika sedang dalam memuat data
+                    recyclerViewFavoriteMovieItems.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    textViewFavoriteMovieEmptyState.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
+    @Override
     public void favoriteMoviePostExecute(Cursor favoriteMovieItems) {
         // Cek jika array list ada data
         if(MainActivity.favoriteMovieItemArray.size() > 0){
@@ -200,7 +215,7 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
         } else {
             // Ketika tidak ada data untuk display, set RecyclerView ke
             // invisible dan progress bar menjadi tidak ada
-            movieItemAdapter.setMovieItemData(MainActivity.favoriteMovieItemArray);
+            movieItemAdapter.setMovieItemData(MainActivity.favoriteMovieItemArray); // Set empty data ke adapter
             progressBar.setVisibility(View.GONE);
             recyclerViewFavoriteMovieItems.setVisibility(View.INVISIBLE);
             // Set empty view visibility into visible, krn merepresentasikan empty data

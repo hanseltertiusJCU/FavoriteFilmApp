@@ -35,6 +35,8 @@ android {
         buildConfigField("String", "FAVORITE_EXTRA_URI", "\"FAVORITE_EXTRA_URI\"")
         buildConfigField("String", "FAVORITE_EXTRA_MOVIE_ITEM", "\"FAVORITE_EXTRA_MOVIE_ITEM\"")
         buildConfigField("String", "FAVORITE_EXTRA_TV_SHOW_ITEM", "\"FAVORITE_EXTRA_TV_SHOW_ITEM\"")
+        // build config untuk action bar
+        buildConfigField("String", "ACTION_BAR_TITLE", "\"ACTION_BAR_TITLE\"")
     }
     buildTypes {
         release {
