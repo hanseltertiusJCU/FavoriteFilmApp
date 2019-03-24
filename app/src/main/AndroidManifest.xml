@@ -27,7 +27,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity android:name=".MainActivity"
-            android:launchMode="singleTop">
+            android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -67,15 +67,15 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Set layout manager into RecyclerView
-        recyclerViewFavoriteTvShowItems.setLayoutManager(new LinearLayoutManager(getContext()));
-        // Buat ukuaran dari masing-masing item di RecyclerView menjadi sama
-        recyclerViewFavoriteTvShowItems.setHasFixedSize(true);
-
         // Initialize tv show adapter
         tvShowItemAdapter = new TvShowItemAdapter(getContext());
         // Notify when the data in adapter changed
         tvShowItemAdapter.notifyDataSetChanged();
+
+        // Set layout manager into RecyclerView
+        recyclerViewFavoriteTvShowItems.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Buat ukuaran dari masing-masing item di RecyclerView menjadi sama
+        recyclerViewFavoriteTvShowItems.setHasFixedSize(true);
 
         // Attach adapter ke RecyclerView agar bisa menghandle orientation changes
         recyclerViewFavoriteTvShowItems.setAdapter(tvShowItemAdapter);
