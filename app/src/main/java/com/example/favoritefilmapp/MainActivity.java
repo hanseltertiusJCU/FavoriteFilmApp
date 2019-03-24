@@ -115,15 +115,17 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         // Cek jika bundle tidak ada alias saat pertama kali activity tercipta
         if(savedInstanceState == null){
             favoriteFilmBottomNavigationView.setSelectedItemId(R.id.navigation_favorite_movie); // Set default navigation
-            // Load async task for getting the Cursor in favorite Movies and TV Show
-            new LoadFavoriteMoviesAsync(this, this).execute();
-            new LoadFavoriteTvShowAsync(this, this).execute();
         } else {
             if(getSupportActionBar() != null){
                 actionBarTitle = savedInstanceState.getString(BuildConfig.ACTION_BAR_TITLE); // Get value from savedinstancestate
                 getSupportActionBar().setTitle(actionBarTitle); // Set action bar title
             }
         }
+
+        // Load async task for getting the Cursor in favorite Movies and TV Show,
+        // taruh code disini supaya load data scr lbh konsisten
+        new LoadFavoriteMoviesAsync(this, this).execute();
+        new LoadFavoriteTvShowAsync(this, this).execute();
     }
 
     @Override
@@ -141,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     public void favoriteMoviePostExecute(Cursor favoriteMovieItems) {
         // make array list value based on cursor
         favoriteMovieItemArray = mapCursorToFavoriteMovieArrayList(favoriteMovieItems);
-        Log.d("fav movie list size", String.valueOf(favoriteMovieItemArray.size()));
         // Make favorite movie fragment value to be the same fragment as fragment instantiated above
         Fragment favoriteMovieFragment = getSupportFragmentManager().findFragmentByTag(FavoriteMovieFragment.class.getSimpleName());
         // Initiate fragment transaction untuk melakukan fragment operation
@@ -174,7 +175,6 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     public void favoriteTvShowPostExecute(Cursor favoriteTvShowItems) {
         // make array list value based on cursor
         favoriteTvShowItemArray = mapCursorToFavoriteTvShowArrayList(favoriteTvShowItems);
-        Log.d("fav tv list size", String.valueOf(favoriteTvShowItemArray.size()));
         // Make favorite tv show fragment value to be the same fragment as fragment instantiated above
         Fragment favoriteTvShowFragment = getSupportFragmentManager().findFragmentByTag(FavoriteTvShowFragment.class.getSimpleName());
         // Initiate fragment transaction untuk melakukan fragment operation
