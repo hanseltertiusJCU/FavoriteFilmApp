@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.example.favoritefilmapp.BuildConfig;
-import com.example.favoritefilmapp.entity.MovieItem;
 import com.example.favoritefilmapp.entity.TvShowItem;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
@@ -76,6 +75,13 @@ public class DetailedFavoriteTvShowViewModel extends AndroidViewModel {
                     String detailedFavoriteTvShowUrl = detailedTvShowUrlBase + mDetailedFavoriteTvShowId + apiKeyFiller + apiKey;
                     // Do the task
                     syncHttpClient.get(detailedFavoriteTvShowUrl, new AsyncHttpResponseHandler() {
+
+                        @Override
+                        public void onStart() {
+                            super.onStart();
+                            // Set ke synchronous karena kita ingin balikin object
+                            setUseSynchronousMode(true);
+                        }
 
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

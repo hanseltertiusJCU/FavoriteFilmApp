@@ -4,14 +4,12 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -168,11 +165,10 @@ public class DetailActivity extends AppCompatActivity {
                     // If condition to accomodate which custom class object to create and takes up cursor as input parameter
                     if(accessItemMode.equals("open_movie_detail")){
                         detailedMovieItem = new MovieItem(cursor);
-                        cursor.close();
                     } else if(accessItemMode.equals("open_tv_show_detail")) {
                         detailedTvShowItem = new TvShowItem(cursor);
-                        cursor.close();
                     }
+                    cursor.close();
                 }
             }
         }
@@ -578,11 +574,9 @@ public class DetailActivity extends AppCompatActivity {
                         // Cek jika ada pergantian state dari sebuah data
                         if(changedState){
                             uri = contentResolver.insert(MOVIE_FAVORITE_CONTENT_URI, favoriteMovieColumnValues); // Insert column into content provider through content resolver and return uri
-                            Log.d("movie uri", String.valueOf(uri));
-                            Log.d("insert movie item", "inserted movie item");
                             detailedMovieFavoriteStateValueComparison = 1; // Ganti value untuk mengupdate comparison
                             // Notify change when data is inserted
-                            contentResolver.notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                            contentResolver.notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
                         }
 
                         // Update option menu
@@ -599,11 +593,9 @@ public class DetailActivity extends AppCompatActivity {
                         changedState = detailedMovieFavoriteStateValue != detailedMovieFavoriteStateValueComparison; // is changed true jika value favorite state bawaan intent itu tidak sama dengan value favorite state
                         // Cek jika ada pergantian state dari sebuah data
                         if(changedState){
-                            Log.d("movie uri", String.valueOf(uri));
-                            // Cek jika ada uri
+                            // Cek jika ada uri yang direturn dari insert maupun bawaan dari
                             if(uri != null){
                                 contentResolver.delete(uri, null, null); // Delete column based on inserted URI item into content provider through content resolver
-                                Log.d("delete movie item", "deleted movie item");
                                 detailedMovieFavoriteStateValueComparison = 0; // Ganti value untuk comparison value, agar dapat menghandle changed state boolean
                                 contentResolver.notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
                             }
@@ -641,8 +633,6 @@ public class DetailActivity extends AppCompatActivity {
                         // Cek jika ada pergantian state dari sebuah data
                         if(changedState){
                             uri = contentResolver.insert(TV_SHOW_FAVORITE_CONTENT_URI, favoriteTvShowColumnValues);
-                            Log.d("tv show uri", String.valueOf(uri));
-                            Log.d("insert tv show item", "inserted tv show item");
                             detailedTvShowFavoriteStateValueComparison = 1; // Ganti value untuk mengupdate comparison
                             contentResolver.notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
                         }
@@ -660,11 +650,9 @@ public class DetailActivity extends AppCompatActivity {
                         changedState = detailedTvShowFavoriteStateValue != detailedTvShowFavoriteStateValueComparison; // is changed true jika value favorite state bawaan intent itu tidak sama dengan value favorite state
                         // Cek jika ada pergantian state dari sebuah data
                         if(changedState){
-                            Log.d("tv show uri", String.valueOf(uri));
                             // Cek jika urinya itu ada
                             if(uri != null){
                                 contentResolver.delete(uri, null, null);
-                                Log.d("delete tv show item", "deleted tv show item");
                                 detailedTvShowFavoriteStateValueComparison = 0; // Ganti value untuk mengupdate comparison
                                 contentResolver.notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
                             }

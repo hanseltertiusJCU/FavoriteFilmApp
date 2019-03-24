@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     // String untuk menampung action bar title
     String actionBarTitle;
 
+    // Observer
+    FavoriteMovieDataObserver myFavoriteMovieObserver;
+    FavoriteTvShowDataObserver myFavoriteTvShowObserver;
+
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -96,8 +100,7 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         movieHandlerThread.start();
 
         Handler movieHandler = new Handler(movieHandlerThread.getLooper()); // Initiate Handler
-        FavoriteMovieDataObserver myFavoriteMovieObserver = new FavoriteMovieDataObserver(movieHandler, this); // Initiate ContentObserver
-        Log.d("movie looper", String.valueOf(movieHandlerThread.getLooper()));
+        myFavoriteMovieObserver = new FavoriteMovieDataObserver(movieHandler, this); // Initiate ContentObserver
         getContentResolver().registerContentObserver(MOVIE_FAVORITE_CONTENT_URI, true, myFavoriteMovieObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
 
         // Initiate handler thread operation in TV Show
@@ -105,8 +108,7 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         tvShowHandlerThread.start();
 
         Handler tvShowHandler = new Handler(tvShowHandlerThread.getLooper()); // Initiate Handler
-        Log.d("tv show looper", String.valueOf(tvShowHandlerThread.getLooper()));
-        FavoriteTvShowDataObserver myFavoriteTvShowObserver = new FavoriteTvShowDataObserver(tvShowHandler, this); // Initiate ContentObserver
+        myFavoriteTvShowObserver = new FavoriteTvShowDataObserver(tvShowHandler, this); // Initiate ContentObserver
 
         getContentResolver().registerContentObserver(TV_SHOW_FAVORITE_CONTENT_URI, true, myFavoriteTvShowObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
 
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     public void favoriteMoviePostExecute(Cursor favoriteMovieItems) {
         // make array list value based on cursor
         favoriteMovieItemArray = mapCursorToFavoriteMovieArrayList(favoriteMovieItems);
+        Log.d("fav movie list size", String.valueOf(favoriteMovieItemArray.size()));
         // Make favorite movie fragment value to be the same fragment as fragment instantiated above
         Fragment favoriteMovieFragment = getSupportFragmentManager().findFragmentByTag(FavoriteMovieFragment.class.getSimpleName());
         // Initiate fragment transaction untuk melakukan fragment operation
@@ -171,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     public void favoriteTvShowPostExecute(Cursor favoriteTvShowItems) {
         // make array list value based on cursor
         favoriteTvShowItemArray = mapCursorToFavoriteTvShowArrayList(favoriteTvShowItems);
+        Log.d("fav tv list size", String.valueOf(favoriteTvShowItemArray.size()));
         // Make favorite tv show fragment value to be the same fragment as fragment instantiated above
         Fragment favoriteTvShowFragment = getSupportFragmentManager().findFragmentByTag(FavoriteTvShowFragment.class.getSimpleName());
         // Initiate fragment transaction untuk melakukan fragment operation

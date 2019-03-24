@@ -21,19 +21,21 @@ public class FavoriteMovieMappingHelper {
         // Array list yang di return
         ArrayList<MovieItem> favoriteMovieItemList = new ArrayList<>();
 
-        // Cek jika masih ada data di cursor
-        while (favoriteMovieItemsCursor.moveToNext()){
-            // Get column values
-            int movieId = favoriteMovieItemsCursor.getInt(favoriteMovieItemsCursor.getColumnIndexOrThrow(_ID));
-            String movieTitle = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_TITLE_COLUMN));
-            String movieRatings = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_RATINGS_COLUMN));
-            String movieOriginalLanguage = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_ORIGINAL_LANGUAGE_COLUMN));
-            String movieReleaseDate = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_RELEASE_DATE_COLUMN));
-            String moviePosterPath = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_FILE_PATH_COLUMN));
-            String movieDateAddedFavorite = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_DATE_ADDED_FAVORITE_COLUMN));
-            int movieBooleanState = favoriteMovieItemsCursor.getInt(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_FAVORITE_COLUMN));
-            // Add MovieItem to arraylist, use constructor that takes variables
-            favoriteMovieItemList.add(new MovieItem(movieId, movieTitle, movieRatings, movieOriginalLanguage, movieReleaseDate, moviePosterPath, movieDateAddedFavorite, movieBooleanState));
+        if(favoriteMovieItemsCursor != null){
+            // Cek jika masih ada data di cursor
+            while (favoriteMovieItemsCursor.moveToNext()){
+                // Get column values
+                int movieId = favoriteMovieItemsCursor.getInt(favoriteMovieItemsCursor.getColumnIndexOrThrow(_ID));
+                String movieTitle = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_TITLE_COLUMN));
+                String movieRatings = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_RATINGS_COLUMN));
+                String movieOriginalLanguage = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_ORIGINAL_LANGUAGE_COLUMN));
+                String movieReleaseDate = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_RELEASE_DATE_COLUMN));
+                String moviePosterPath = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_FILE_PATH_COLUMN));
+                String movieDateAddedFavorite = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_DATE_ADDED_FAVORITE_COLUMN));
+                int movieBooleanState = favoriteMovieItemsCursor.getInt(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_FAVORITE_COLUMN));
+                // Add MovieItem to arraylist, use constructor that takes variables
+                favoriteMovieItemList.add(new MovieItem(movieId, movieTitle, movieRatings, movieOriginalLanguage, movieReleaseDate, moviePosterPath, movieDateAddedFavorite, movieBooleanState));
+            }
         }
 
         // Return arraylist

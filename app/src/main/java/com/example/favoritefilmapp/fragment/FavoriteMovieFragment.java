@@ -93,10 +93,6 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        // Set visibility of views ketika sedang dalam memuat data
-//        recyclerViewFavoriteMovieItems.setVisibility(View.INVISIBLE);
-//        progressBar.setVisibility(View.VISIBLE);
-//        textViewFavoriteMovieEmptyState.setVisibility(View.GONE);
         // Cek jika bundle savedInstanceState itu ada
         if(savedInstanceState != null) {
             // Retrieve array list parcelable

@@ -76,7 +76,7 @@ public class DetailedFavoriteMovieViewModel extends AndroidViewModel {
                         @Override
                         public void onStart() {
                             super.onStart();
-                            // Set ke synchronous
+                            // Set ke synchronous karena kita ingin balikin object
                             setUseSynchronousMode(true);
                         }
 
