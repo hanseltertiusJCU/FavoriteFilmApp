@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +50,9 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
     TextView textViewFavoriteTvShowEmptyState;
     // Set tv show adapter class
     TvShowItemAdapter tvShowItemAdapter;
+    // Initiate Swipe to refresh layout
+    @BindView(R.id.fragment_tv_show_swipe_refresh_layout)
+    SwipeRefreshLayout fragmentTvShowSwipeRefreshLayout;
 
     @Nullable
     @Override
@@ -92,10 +96,6 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        // Set visibility of views ketika sedang dalam memuat data
-//        recyclerViewFavoriteTvShowItems.setVisibility(View.INVISIBLE);
-//        progressBar.setVisibility(View.VISIBLE);
-//        textViewFavoriteTvShowEmptyState.setVisibility(View.GONE);
         // Cek jika bundle savedInstanceState itu ada
         if(savedInstanceState != null) {
             // Retrieve array list parcelable untuk retrieve scroll position
@@ -106,6 +106,8 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
                     // Hilangkan progress bar agar tidak ada progress bar lagi setelah d rotate
                     progressBar.setVisibility(View.GONE);
                     recyclerViewFavoriteTvShowItems.setVisibility(View.VISIBLE);
+                    // Set empty view visibility into gone
+                    textViewFavoriteTvShowEmptyState.setVisibility(View.GONE);
                     // Set data ke adapter
                     tvShowItemAdapter.setTvShowItemData(tvShowItemsList);
                     // Set item click listener di dalam recycler view agar item tsb dapat di click
@@ -150,6 +152,35 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
                 textViewFavoriteTvShowEmptyState.setText(getString(R.string.no_internet_connection));
             }
         }
+
+        // Set on refresh listener on fragment tv show
+        fragmentTvShowSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Cek jika ada activity
+                if(getActivity() != null){
+                    // Connectivity manager untuk mengecek state dari network connectivity
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    // Network Info object untuk melihat ada data network yang aktif
+                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                    // Cek jika ada network connection
+                    if(networkInfo != null && networkInfo.isConnected()){
+                        // Lakukan AsyncTask utk meretrieve ArrayList yg isinya data dari database
+                        new LoadFavoriteTvShowAsync(getActivity(), FavoriteTvShowFragment.this).execute();
+                    } else {
+                        // Progress bar into gone and recycler view into invisible as the data finished on loading
+                        progressBar.setVisibility(View.GONE);
+                        recyclerViewFavoriteTvShowItems.setVisibility(View.INVISIBLE);
+                        // Set empty text view visibility into visible
+                        textViewFavoriteTvShowEmptyState.setVisibility(View.VISIBLE);
+                        // Empty text view yg menunjukkan bahwa tidak ada internet yang sedang terhubung
+                        textViewFavoriteTvShowEmptyState.setText(getString(R.string.no_internet_connection));
+                    }
+                }
+                // Set refresh jadi false menandakan bahwa datanya sudah di load
+                fragmentTvShowSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     // Method tsb berguna untuk membawa value dari Intent ke Activity tujuan serta memanggil Activity tujuan

@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.favoritefilmapp.entity.MovieItem;
 import com.example.favoritefilmapp.entity.TvShowItem;
 import com.example.favoritefilmapp.factory.DetailedFavoriteTvShowViewModelFactory;
@@ -304,8 +306,12 @@ public class DetailActivity extends AppCompatActivity {
 
                 // Cek jika array list tidak null
                 if(movieItems != null){
-                    // Load image jika ada poster path ke dalam image view
-                    Picasso.get().load(baseImageUrl + movieItems.get(0).getMoviePosterPath()).into(detailedItemPosterImage);
+
+                    // Load image jika ada poster path ke dalam circle image view
+                    Glide.with(DetailActivity.this)
+                            .load(baseImageUrl + movieItems.get(0).getMoviePosterPath())
+                            .apply(new RequestOptions().override(55, 55))
+                            .into(detailedItemPosterImage);
 
                     // Cek jika ada value dari variable movie title
                     if(movieItems.get(0).getMovieTitle() != null && !movieItems.get(0).getMovieTitle().isEmpty()){
@@ -409,8 +415,12 @@ public class DetailActivity extends AppCompatActivity {
 
                 // Cek jika array list exist, ini gunanya untuk mencegah null pointer exception
                 if(tvShowItems != null){
-                    // Load image jika ada poster path ke dalam image view
-                    Picasso.get().load(baseImageUrl + tvShowItems.get(0).getTvShowPosterPath()).into(detailedItemPosterImage);
+
+                    // Load image jika ada poster path ke dalam circle image view
+                    Glide.with(DetailActivity.this)
+                            .load(baseImageUrl + tvShowItems.get(0).getTvShowPosterPath())
+                            .apply(new RequestOptions().override(55, 55))
+                            .into(detailedItemPosterImage);
 
                     // Cek jika ada value dari variable tv show name
                     if(tvShowItems.get(0).getTvShowName() != null && !tvShowItems.get(0).getTvShowName().isEmpty()){

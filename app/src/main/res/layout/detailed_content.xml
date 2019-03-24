@@ -14,9 +14,10 @@
 
         <!-- Constraint untuk informasi dasar -->
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/detailed_item_poster_image"
-            style="@style/PosterImage"
+            style="@style/CirclePosterImage"
+            android:layout_centerVertical="true"
             android:layout_margin="@dimen/inner_view_margin"
             app:layout_constraintBottom_toBottomOf="@id/detailed_third_info_text"
             app:layout_constraintStart_toStartOf="parent"

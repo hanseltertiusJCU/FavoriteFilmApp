@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +50,9 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
     TextView textViewFavoriteMovieEmptyState;
     // Set movie adapter class
     MovieItemAdapter movieItemAdapter;
+    // Initiate Swipe to refresh layout
+    @BindView(R.id.fragment_movie_swipe_refresh_layout)
+    SwipeRefreshLayout fragmentMovieSwipeRefreshLayout;
 
 
     @Nullable
@@ -148,6 +152,36 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
                 textViewFavoriteMovieEmptyState.setText(getString(R.string.no_internet_connection));
             }
         }
+
+        // Set refresh listener untuk menghandle refresh event
+        fragmentMovieSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            // Line ini berguna ketika fragment sedang di refresh
+            @Override
+            public void onRefresh() {
+                // Cek jika ada activity
+                if(getActivity() != null){
+                    // Connectivity manager untuk mengecek state dari network connectivity
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    // Network Info object untuk melihat ada data network yang aktif
+                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                    // Cek jika ada network connection
+                    if(networkInfo != null && networkInfo.isConnected()){
+                        // Lakukan AsyncTask utk meretrieve ArrayList yg isinya data dari database
+                        new LoadFavoriteMoviesAsync(getActivity(), FavoriteMovieFragment.this).execute();
+                    } else {
+                        // Progress bar into gone and recycler view into invisible as the data finished on loading
+                        progressBar.setVisibility(View.GONE);
+                        recyclerViewFavoriteMovieItems.setVisibility(View.INVISIBLE);
+                        // Set empty view visibility into visible
+                        textViewFavoriteMovieEmptyState.setVisibility(View.VISIBLE);
+                        // Empty text view yg menunjukkan bahwa tidak ada internet yang sedang terhubung
+                        textViewFavoriteMovieEmptyState.setText(getString(R.string.no_internet_connection));
+                    }
+                }
+                // Set refresh jadi false menandakan bahwa datanya sudah di load
+                fragmentMovieSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     // Method tsb berguna untuk membawa value dari Intent ke Activity tujuan serta memanggil Activity tujuan

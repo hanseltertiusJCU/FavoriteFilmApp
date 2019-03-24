@@ -29,6 +29,13 @@
         <item name="android:layout_centerVertical">true</item>
     </style>
 
+    <!-- Style untuk menampung circle image view poster image -->
+    <style name="CirclePosterImage">
+        <item name="android:layout_width">55dp</item>
+        <item name="android:layout_height">55dp</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
     <!-- Style untuk menampung empty data text -->
     <style name="NoDataText">
         <item name="android:layout_width">wrap_content</item>
