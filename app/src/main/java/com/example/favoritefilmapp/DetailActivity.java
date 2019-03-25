@@ -11,6 +11,9 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -95,9 +98,16 @@ public class DetailActivity extends AppCompatActivity {
     ProgressBar detailedProgressBar;
     @BindView(R.id.detailed_info_content)
     LinearLayout detailedInfoContent;
+    // Setup coordinator layout for playing a part in making snackbar
+    @BindView(R.id.detailed_coordinator_layout)
+    CoordinatorLayout detailedCoordinatorLayout;
+    // View untuk swipe to refresh
+    @BindView(R.id.detailed_content_swipe_refresh_layout)
+    SwipeRefreshLayout detailedContentSwipeRefreshLayout;
 
     /*
     * Line tsb berguna untuk setup variable
+    *
     * */
     // Setup intent value untuk movie items
     private int detailedMovieId;
@@ -127,6 +137,17 @@ public class DetailActivity extends AppCompatActivity {
     private Uri uri;
     // Register content resolver
     private ContentResolver contentResolver;
+
+    // Viewmodel dan observer untuk detailedMovie
+    DetailedFavoriteMovieViewModel detailedFavoriteMovieViewModel;
+    Observer<ArrayList<MovieItem>> detailedFavoriteMovieObserver;
+
+    // Viewmodel dan observer untuk detailedTvShow
+    DetailedFavoriteTvShowViewModel detailedFavoriteTvShowViewModel;
+    Observer<ArrayList<TvShowItem>> detailedFavoriteTvShowObserver;
+
+    // Initiate snackbar
+    Snackbar snackbarMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,17 +267,15 @@ public class DetailActivity extends AppCompatActivity {
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if(networkInfo != null && networkInfo.isConnected()){
                 // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
-                // Buat ViewModel untuk detailedMovieInfo
-                DetailedFavoriteMovieViewModel detailedFavoriteMovieViewModel = ViewModelProviders.of(this, new DetailedFavoriteMovieViewModelFactory(this.getApplication(), detailedMovieId)).get(DetailedFavoriteMovieViewModel.class);
+                detailedFavoriteMovieViewModel = ViewModelProviders.of(this, new DetailedFavoriteMovieViewModelFactory(this.getApplication(), detailedMovieId)).get(DetailedFavoriteMovieViewModel.class);
                 // Buat observer object untuk mendisplay data ke UI
-                // Buat Observer untuk detailedMovieInfo
-                Observer<ArrayList<MovieItem>> detailedFavoriteMovieObserver = createDetailedFavoriteMovieObserver();
+                detailedFavoriteMovieObserver = createDetailedFavoriteMovieObserver();
                 // Tempelkan Observer ke LiveData object
                 detailedFavoriteMovieViewModel.getDetailedFavoriteMovie().observe(this, detailedFavoriteMovieObserver);
             } else {
                 // Progress bar into gone and recycler view into invisible as the data finished on loading
                 detailedProgressBar.setVisibility(View.GONE);
-                detailedInfoContent.setVisibility(View.VISIBLE);
+                detailedInfoContent.setVisibility(View.INVISIBLE);
                 // Set empty view visibility into visible
                 detailedEmptyInfoTextView.setVisibility(View.VISIBLE);
                 // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
@@ -274,23 +293,84 @@ public class DetailActivity extends AppCompatActivity {
             // Cek jika ada network connection
             if(networkInfo != null && networkInfo.isConnected()){
                 // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
-                // Buat ViewModel untuk detailedTvShowInfo
-                DetailedFavoriteTvShowViewModel detailedFavoriteTvShowViewModel = ViewModelProviders.of(this, new DetailedFavoriteTvShowViewModelFactory(this.getApplication(), detailedTvShowId)).get(DetailedFavoriteTvShowViewModel.class);
+                detailedFavoriteTvShowViewModel = ViewModelProviders.of(this, new DetailedFavoriteTvShowViewModelFactory(this.getApplication(), detailedTvShowId)).get(DetailedFavoriteTvShowViewModel.class);
                 // Buat observer object untuk mendisplay data ke UI
-                // Buat Observer untuk detailedTvShowInfo
-                Observer<ArrayList<TvShowItem>> detailedFavoriteTvShowObserver = createDetailedFavoriteTvShowObserver();
+                detailedFavoriteTvShowObserver = createDetailedFavoriteTvShowObserver();
                 // Tempelkan Observer ke LiveData object
                 detailedFavoriteTvShowViewModel.getDetailedFavoriteTvShow().observe(this, detailedFavoriteTvShowObserver);
             } else { // Kondisi jika tidak connected ke network
                 // Progress bar into gone and recycler view into invisible as the data finished on loading
                 detailedProgressBar.setVisibility(View.GONE);
-                detailedInfoContent.setVisibility(View.VISIBLE);
+                detailedInfoContent.setVisibility(View.INVISIBLE);
                 // Set empty view visibility into visible
                 detailedEmptyInfoTextView.setVisibility(View.VISIBLE);
                 // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
                 detailedEmptyInfoTextView.setText(getString(R.string.no_internet_connection));
             }
         }
+
+        // Set SwipeToRefreshLayout refresh listener
+        detailedContentSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Mode untuk menangani ViewModel yg berbeda
+                if(accessItemMode.equals("open_movie_detail")) {
+                    // Set visibility of views ketika sedang dalam meretrieve data
+                    detailedInfoContent.setVisibility(View.INVISIBLE);
+                    detailedProgressBar.setVisibility(View.VISIBLE);
+                    detailedEmptyInfoTextView.setVisibility(View.GONE);
+                    // Connectivity manager untuk mengecek state dari network connectivity
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+                    // Network Info object untuk melihat ada data network yang aktif
+                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                    if(networkInfo != null && networkInfo.isConnected()){
+                        // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
+                        detailedFavoriteMovieViewModel = ViewModelProviders.of(DetailActivity.this, new DetailedFavoriteMovieViewModelFactory(getApplication(), detailedMovieId)).get(DetailedFavoriteMovieViewModel.class);
+                        // Buat observer object untuk mendisplay data ke UI
+                        detailedFavoriteMovieObserver = createDetailedFavoriteMovieObserver();
+                        // Tempelkan Observer ke LiveData object
+                        detailedFavoriteMovieViewModel.getDetailedFavoriteMovie().observe(DetailActivity.this, detailedFavoriteMovieObserver);
+                    } else {
+                        // Progress bar into gone and recycler view into invisible as the data finished on loading
+                        detailedProgressBar.setVisibility(View.GONE);
+                        detailedInfoContent.setVisibility(View.INVISIBLE);
+                        // Set empty view visibility into visible
+                        detailedEmptyInfoTextView.setVisibility(View.VISIBLE);
+                        // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
+                        detailedEmptyInfoTextView.setText(getString(R.string.no_internet_connection));
+                    }
+                } else if(accessItemMode.equals("open_tv_show_detail")) {
+                    // Set visibility of views ketika sedang dalam meretrieve data
+                    detailedInfoContent.setVisibility(View.INVISIBLE);
+                    detailedProgressBar.setVisibility(View.VISIBLE);
+                    detailedEmptyInfoTextView.setVisibility(View.GONE);
+                    // Connectivity manager untuk mengecek state dari network connectivity
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+                    // Network Info object untuk melihat ada data network yang aktif
+                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                    // Cek jika ada network connection
+                    if(networkInfo != null && networkInfo.isConnected()){
+                        // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
+                        detailedFavoriteTvShowViewModel = ViewModelProviders.of(DetailActivity.this, new DetailedFavoriteTvShowViewModelFactory(getApplication(), detailedTvShowId)).get(DetailedFavoriteTvShowViewModel.class);
+                        // Buat observer object untuk mendisplay data ke UI
+                        detailedFavoriteTvShowObserver = createDetailedFavoriteTvShowObserver();
+                        // Tempelkan Observer ke LiveData object
+                        detailedFavoriteTvShowViewModel.getDetailedFavoriteTvShow().observe(DetailActivity.this, detailedFavoriteTvShowObserver);
+                    } else { // Kondisi jika tidak connected ke network
+                        // Progress bar into gone and recycler view into invisible as the data finished on loading
+                        detailedProgressBar.setVisibility(View.GONE);
+                        detailedInfoContent.setVisibility(View.INVISIBLE);
+                        // Set empty view visibility into visible
+                        detailedEmptyInfoTextView.setVisibility(View.VISIBLE);
+                        // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
+                        detailedEmptyInfoTextView.setText(getString(R.string.no_internet_connection));
+                    }
+                }
+
+                // Set refreshing into false, menandakan bahwa data sudah selesai di load
+                detailedContentSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     // Buat observer method untuk favorite Movie yang gunanya untuk return observer object
@@ -587,6 +667,9 @@ public class DetailActivity extends AppCompatActivity {
                             detailedMovieFavoriteStateValueComparison = 1; // Ganti value untuk mengupdate comparison
                             // Notify change when data is inserted
                             contentResolver.notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                            // Buat sebuah snackbar yang menandakan bahwa movie item inserted ke database
+                            snackbarMessage = Snackbar.make(detailedCoordinatorLayout, getString(R.string.insert_movie_favorite_snackbar), Snackbar.LENGTH_SHORT);
+                            snackbarMessage.show();
                         }
 
                         // Update option menu
@@ -608,6 +691,9 @@ public class DetailActivity extends AppCompatActivity {
                                 contentResolver.delete(uri, null, null); // Delete column based on inserted URI item into content provider through content resolver
                                 detailedMovieFavoriteStateValueComparison = 0; // Ganti value untuk comparison value, agar dapat menghandle changed state boolean
                                 contentResolver.notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                                // Buat sebuah snack bar message bahwa movie item removed dari database
+                                snackbarMessage = Snackbar.make(detailedCoordinatorLayout, getString(R.string.remove_movie_favorite_snackbar), Snackbar.LENGTH_SHORT);
+                                snackbarMessage.show();
                             }
                         }
 
@@ -645,6 +731,9 @@ public class DetailActivity extends AppCompatActivity {
                             uri = contentResolver.insert(TV_SHOW_FAVORITE_CONTENT_URI, favoriteTvShowColumnValues);
                             detailedTvShowFavoriteStateValueComparison = 1; // Ganti value untuk mengupdate comparison
                             contentResolver.notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                            // Buat sebuah snackbar yang menandakan bahwa tv show item inserted ke database
+                            snackbarMessage = Snackbar.make(detailedCoordinatorLayout, getString(R.string.insert_tv_show_favorite_snackbar), Snackbar.LENGTH_SHORT);
+                            snackbarMessage.show();
                         }
 
                         // Update option menu
@@ -665,6 +754,9 @@ public class DetailActivity extends AppCompatActivity {
                                 contentResolver.delete(uri, null, null);
                                 detailedTvShowFavoriteStateValueComparison = 0; // Ganti value untuk mengupdate comparison
                                 contentResolver.notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
+                                // Buat sebuah snackbar yang menandakan bahwa tv show item removed dari database
+                                snackbarMessage = Snackbar.make(detailedCoordinatorLayout, getString(R.string.remove_tv_show_favorite_snackbar), Snackbar.LENGTH_SHORT);
+                                snackbarMessage.show();
                             }
                         }
 
@@ -673,21 +765,10 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
                 break;
-            case R.id.home:
-                // Finish method untuk membawa Intent ke MainActivity
-                finish();
-                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        // Finish method untuk membawa Intent ke MainActivity
-        finish();
     }
 
     @Override

@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detailed_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_vertical_margin"
+    android:fitsSystemWindows="true"
     tools:context=".DetailActivity">
 
-    <LinearLayout
-        android:id="@+id/detailed_info_content"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/detailed_content_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
-            layout="@layout/detailed_content"/>
+            layout="@layout/detailed_content_scrolling"/>
 
-    </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/detailed_progress_bar"
         style="@style/ProgressBar"
         android:layout_gravity="center"/>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/empty_detailed_info_text"
+        style="@style/NoDataText"
+        android:layout_gravity="center"
+        tools:text="@string/no_favorite_movie_data_shown" />
+
+</android.support.design.widget.CoordinatorLayout>

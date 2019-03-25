@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Scroll view agar content dapat di scroll in case contentnya itu panjang -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailActivity"
+    tools:showIn="@layout/activity_detail">
+
+    <!-- Include content (ConstraintLayout) -->
+
+    <LinearLayout
+        android:id="@+id/detailed_info_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/detail_content_info"/>
+
+    </LinearLayout>
+
+</ScrollView>
