@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FavoriteFilmApp</string>
+    <string name="app_name">Favorite Film</string>
 
     <!-- Set Span movie item section title -->
     <string name="span_movie_item_ratings">Ratings :</string>

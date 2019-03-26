@@ -1,11 +1,14 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Base application theme. Set AppCompatLight for black content color -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- Set status bar color as well as its text color in there -->
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <!-- Style untuk menampung progress bar -->

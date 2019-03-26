@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -38,7 +38,6 @@ import com.example.favoritefilmapp.model.DetailedFavoriteMovieViewModel;
 import com.example.favoritefilmapp.model.DetailedFavoriteTvShowViewModel;
 import com.example.favoritefilmapp.observer.FavoriteMovieDataObserver;
 import com.example.favoritefilmapp.observer.FavoriteTvShowDataObserver;
-import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -97,7 +96,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.detailed_progress_bar)
     ProgressBar detailedProgressBar;
     @BindView(R.id.detailed_info_content)
-    LinearLayout detailedInfoContent;
+    ConstraintLayout detailedInfoContent;
     // Setup coordinator layout for playing a part in making snackbar
     @BindView(R.id.detailed_coordinator_layout)
     CoordinatorLayout detailedCoordinatorLayout;
@@ -338,6 +337,12 @@ public class DetailActivity extends AppCompatActivity {
                         detailedEmptyInfoTextView.setVisibility(View.VISIBLE);
                         // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
                         detailedEmptyInfoTextView.setText(getString(R.string.no_internet_connection));
+                        // Line ini berguna untuk membuat clickable icon menjadi false,
+                        // alias ketika tidak ada internet
+                        // Set clickable into false
+                        menuClickable = false;
+                        // Invalidate option menu for call on prepare option menu
+                        invalidateOptionsMenu();
                     }
                 } else if(accessItemMode.equals("open_tv_show_detail")) {
                     // Set visibility of views ketika sedang dalam meretrieve data
@@ -364,6 +369,12 @@ public class DetailActivity extends AppCompatActivity {
                         detailedEmptyInfoTextView.setVisibility(View.VISIBLE);
                         // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
                         detailedEmptyInfoTextView.setText(getString(R.string.no_internet_connection));
+                        // Line ini berguna untuk membuat clickable icon menjadi false,
+                        // alias ketika tidak ada internet
+                        // Set clickable into false
+                        menuClickable = false;
+                        // Invalidate option menu for call on prepare option menu
+                        invalidateOptionsMenu();
                     }
                 }
 

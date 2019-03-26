@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detailed_info_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".DetailActivity">
@@ -12,6 +13,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/detailed_item_poster_image"
         style="@style/CirclePosterImage"
+        android:contentDescription="@string/poster_image_description"
         android:layout_centerVertical="true"
         android:layout_margin="@dimen/inner_view_margin"
         app:layout_constraintBottom_toBottomOf="@id/detailed_third_info_text"

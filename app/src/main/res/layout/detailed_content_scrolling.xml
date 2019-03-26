@@ -5,20 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="vertical"
     tools:context=".DetailActivity"
     tools:showIn="@layout/activity_detail">
 
     <!-- Include content (ConstraintLayout) -->
 
-    <LinearLayout
-        android:id="@+id/detailed_info_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/detail_content_info"/>
-
-    </LinearLayout>
+    <include
+        layout="@layout/detail_content_info"/>
 
 </ScrollView>

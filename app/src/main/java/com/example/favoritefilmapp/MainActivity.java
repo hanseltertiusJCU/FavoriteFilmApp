@@ -3,14 +3,12 @@ package com.example.favoritefilmapp;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.favoritefilmapp.async.LoadFavoriteMoviesAsync;
@@ -39,18 +37,14 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
     BottomNavigationView favoriteFilmBottomNavigationView;
 
     // Initiate ArrayList that takes up MovieItem and TvShowItem
-    public static ArrayList<MovieItem> favoriteMovieItemArray = new ArrayList<>(); // Initiate array list object that shows favorite movie item
-    public static ArrayList<TvShowItem> favoriteTvShowItemArray = new ArrayList<>(); // Initiate array list object that shows favorite tv show item
+    public static ArrayList<MovieItem> favoriteMovieItemArray; // Initiate array list object that shows favorite movie item
+    public static ArrayList<TvShowItem> favoriteTvShowItemArray; // Initiate array list object that shows favorite tv show item
 
     // Create fragment object
     Fragment fragment;
 
     // String untuk menampung action bar title
     String actionBarTitle;
-
-    // Observer
-    FavoriteMovieDataObserver myFavoriteMovieObserver;
-    FavoriteTvShowDataObserver myFavoriteTvShowObserver;
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -100,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         movieHandlerThread.start();
 
         Handler movieHandler = new Handler(movieHandlerThread.getLooper()); // Initiate Handler
-        myFavoriteMovieObserver = new FavoriteMovieDataObserver(movieHandler, this); // Initiate ContentObserver
+        FavoriteMovieDataObserver myFavoriteMovieObserver = new FavoriteMovieDataObserver(movieHandler, this); // Initiate ContentObserver
         getContentResolver().registerContentObserver(MOVIE_FAVORITE_CONTENT_URI, true, myFavoriteMovieObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
 
         // Initiate handler thread operation in TV Show
@@ -108,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         tvShowHandlerThread.start();
 
         Handler tvShowHandler = new Handler(tvShowHandlerThread.getLooper()); // Initiate Handler
-        myFavoriteTvShowObserver = new FavoriteTvShowDataObserver(tvShowHandler, this); // Initiate ContentObserver
+        FavoriteTvShowDataObserver myFavoriteTvShowObserver = new FavoriteTvShowDataObserver(tvShowHandler, this); // Initiate ContentObserver
 
         getContentResolver().registerContentObserver(TV_SHOW_FAVORITE_CONTENT_URI, true, myFavoriteTvShowObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
 
@@ -128,17 +122,17 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         new LoadFavoriteTvShowAsync(this, this).execute();
     }
 
+    // Implement method dari interface load favorite movie
     @Override
     public void favoriteMoviePreExecute() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(MainActivity.class.getSimpleName(), "Favorite Movie data loading"); // Log message untuk load favorite movie data
+                favoriteMovieItemArray = new ArrayList<>(); // Initiate array list object when preparing data to load
             }
         });
     }
 
-    // Implement method dari interface load favorite movie
     @Override
     public void favoriteMoviePostExecute(Cursor favoriteMovieItems) {
         // make array list value based on cursor
@@ -160,17 +154,17 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
 
     }
 
+    // Implement method dari interface load favorite tv show
     @Override
     public void favoriteTvShowPreExecute() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(MainActivity.class.getSimpleName(), "Favorite TV Show data loading"); // Log message untuk load favorite TV Show data
+                favoriteTvShowItemArray = new ArrayList<>(); // Initiate array list object when preparing data to load
             }
         });
     }
 
-    // Implement method dari interface load favorite tv show
     @Override
     public void favoriteTvShowPostExecute(Cursor favoriteTvShowItems) {
         // make array list value based on cursor

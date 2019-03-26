@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height"
-    android:background="@drawable/border"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:background="@drawable/ripple_border">
 
     <ImageView
         android:id="@+id/poster_image"
         style="@style/PosterImage"
+        android:contentDescription="@string/poster_image_description"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/inner_view_margin"
         android:layout_marginEnd="@dimen/inner_view_margin"
