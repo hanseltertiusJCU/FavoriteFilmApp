@@ -15,6 +15,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,6 +109,8 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
                     // Hilangkan progress bar agar tidak ada progress bar lagi setelah d rotate
                     progressBar.setVisibility(View.GONE);
                     recyclerViewFavoriteMovieItems.setVisibility(View.VISIBLE);
+                    // Set empty view visibility into gone
+                    textViewFavoriteMovieEmptyState.setVisibility(View.GONE);
                     // Set data ke adapter
                     movieItemAdapter.setMovieItemData(movieItemList);
                     // Set item click listener di dalam recycler view agar item tsb dapat di click
@@ -230,6 +233,7 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
             // yang menandakan bahwa loadingnya sudah selesai
             progressBar.setVisibility(View.GONE);
             recyclerViewFavoriteMovieItems.setVisibility(View.VISIBLE);
+            recyclerViewFavoriteMovieItems.smoothScrollToPosition(0);
             // Set empty view visibility into gone
             textViewFavoriteMovieEmptyState.setVisibility(View.GONE);
             // Set data into adapter

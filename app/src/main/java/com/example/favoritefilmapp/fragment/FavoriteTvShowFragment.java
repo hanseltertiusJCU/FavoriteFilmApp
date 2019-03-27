@@ -15,6 +15,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -230,6 +231,8 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
             // yang menandakan bahwa loadingnya sudah selesai
             progressBar.setVisibility(View.GONE);
             recyclerViewFavoriteTvShowItems.setVisibility(View.VISIBLE);
+            // Set recycler view scroll position ke paling awal
+            recyclerViewFavoriteTvShowItems.smoothScrollToPosition(0);
             // Set empty view visibility into gone
             textViewFavoriteTvShowEmptyState.setVisibility(View.GONE);
             // Set data into adapter

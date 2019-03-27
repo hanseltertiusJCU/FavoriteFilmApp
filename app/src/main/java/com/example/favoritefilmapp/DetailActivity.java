@@ -107,7 +107,7 @@ public class DetailActivity extends AppCompatActivity {
     /*
     * Line tsb berguna untuk setup variable
     *
-    * */
+    */
     // Setup intent value untuk movie items
     private int detailedMovieId;
     private String detailedMovieTitle;
@@ -338,8 +338,7 @@ public class DetailActivity extends AppCompatActivity {
                         // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
                         detailedEmptyInfoTextView.setText(getString(R.string.no_internet_connection));
                         // Line ini berguna untuk membuat clickable icon menjadi false,
-                        // alias ketika tidak ada internet
-                        // Set clickable into false
+                        // alias ketika display no internet data
                         menuClickable = false;
                         // Invalidate option menu for call on prepare option menu
                         invalidateOptionsMenu();
@@ -370,8 +369,7 @@ public class DetailActivity extends AppCompatActivity {
                         // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
                         detailedEmptyInfoTextView.setText(getString(R.string.no_internet_connection));
                         // Line ini berguna untuk membuat clickable icon menjadi false,
-                        // alias ketika tidak ada internet
-                        // Set clickable into false
+                        // alias ketika display no internet data
                         menuClickable = false;
                         // Invalidate option menu for call on prepare option menu
                         invalidateOptionsMenu();
