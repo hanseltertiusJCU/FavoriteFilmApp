@@ -15,7 +15,7 @@ public class DetailedFavoriteMovieViewModelFactory implements ViewModelProvider.
     private int mFavoriteMovieId;
 
     // Constructor untuk membawa application context beserta id ke ViewModel constructor
-    public DetailedFavoriteMovieViewModelFactory(Application application, int favoriteMovieId){
+    public DetailedFavoriteMovieViewModelFactory(Application application, int favoriteMovieId) {
         mApplication = application;
         mFavoriteMovieId = favoriteMovieId;
     }

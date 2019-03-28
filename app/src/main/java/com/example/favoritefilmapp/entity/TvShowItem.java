@@ -29,14 +29,14 @@ public class TvShowItem implements Parcelable {
     private int favoriteBooleanState;
 
     // Constrcutor untuk menampung JSONObject then set data
-    public TvShowItem(JSONObject jsonObject){
+    public TvShowItem(JSONObject jsonObject) {
         try {
             // Get JSON object fields
             int dataId = jsonObject.getInt("id");
             String dataName = jsonObject.getString("name");
             JSONArray dataEpisodesRuntimeArray = jsonObject.getJSONArray("episode_run_time");
             String dataRuntimeEpisodes = null;
-            if(dataEpisodesRuntimeArray.length() > 0){
+            if (dataEpisodesRuntimeArray.length() > 0) {
                 dataRuntimeEpisodes = dataEpisodesRuntimeArray.getString(0); // retrieve value from episode_run_time JSON Array
             }
             String dataRatings = jsonObject.getString("vote_average");
@@ -56,13 +56,13 @@ public class TvShowItem implements Parcelable {
             this.tvShowFirstAirDate = dataFirstAirDate;
             this.tvShowOverview = dataOverview;
             this.tvShowPosterPath = dataPosterPath;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     // Empty constructor
-    public TvShowItem(){
+    public TvShowItem() {
 
     }
 
@@ -79,7 +79,7 @@ public class TvShowItem implements Parcelable {
     }
 
     // Constructor untuk menampung Cursor
-    public TvShowItem(Cursor cursor){
+    public TvShowItem(Cursor cursor) {
         // Method ini berguna untuk set variable values yang ada di column values
         this.tvShowId = getColumnInt(cursor, _ID);
         this.tvShowName = getColumnString(cursor, FavoriteDatabaseContract.FavoriteTvShowItemColumns.TV_SHOW_NAME_COLUMN);

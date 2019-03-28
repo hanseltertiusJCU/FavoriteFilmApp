@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -16,7 +17,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -32,8 +32,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.favoritefilmapp.entity.MovieItem;
 import com.example.favoritefilmapp.entity.TvShowItem;
-import com.example.favoritefilmapp.factory.DetailedFavoriteTvShowViewModelFactory;
 import com.example.favoritefilmapp.factory.DetailedFavoriteMovieViewModelFactory;
+import com.example.favoritefilmapp.factory.DetailedFavoriteTvShowViewModelFactory;
 import com.example.favoritefilmapp.model.DetailedFavoriteMovieViewModel;
 import com.example.favoritefilmapp.model.DetailedFavoriteTvShowViewModel;
 import com.example.favoritefilmapp.observer.FavoriteMovieDataObserver;
@@ -105,9 +105,9 @@ public class DetailActivity extends AppCompatActivity {
     SwipeRefreshLayout detailedContentSwipeRefreshLayout;
 
     /*
-    * Line tsb berguna untuk setup variable
-    *
-    */
+     * Line tsb berguna untuk setup variable
+     *
+     */
     // Setup intent value untuk movie items
     private int detailedMovieId;
     private String detailedMovieTitle;
@@ -162,12 +162,12 @@ public class DetailActivity extends AppCompatActivity {
         contentResolver = getContentResolver();
 
         // Cek untuk mode yg tepat
-        if(accessItemMode.equals("open_movie_detail")){
+        if (accessItemMode.equals("open_movie_detail")) {
             // Get intent untuk mendapatkan id, title serta favorite movie state dari {@link MainActivity}
             detailedMovieId = getIntent().getIntExtra(BuildConfig.FAVORITE_MOVIE_ID_DATA, 0);
             detailedMovieTitle = getIntent().getStringExtra(BuildConfig.FAVORITE_MOVIE_TITLE_DATA);
             detailedMovieFavoriteStateValueComparison = getIntent().getIntExtra(BuildConfig.FAVORITE_MOTIE_BOOLEAN_STATE_DATA, 0);
-        } else if(accessItemMode.equals("open_tv_show_detail")){
+        } else if (accessItemMode.equals("open_tv_show_detail")) {
             // Get intent untuk mendapatkan id, title serta favorite tv show state dari {@link MainActivity}
             detailedTvShowId = getIntent().getIntExtra(BuildConfig.FAVORITE_TV_SHOW_ID_DATA, 0);
             detailedTvShowName = getIntent().getStringExtra(BuildConfig.FAVORITE_TV_SHOW_TITLE_DATA);
@@ -178,16 +178,16 @@ public class DetailActivity extends AppCompatActivity {
         uri = getIntent().getData();
 
         // Cek jika uri itu exist
-        if(uri != null){
+        if (uri != null) {
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 
             // Cek jika cursor exist
-            if(cursor != null){
-                if(cursor.moveToFirst()){
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
                     // If condition to accomodate which custom class object to create and takes up cursor as input parameter
-                    if(accessItemMode.equals("open_movie_detail")){
+                    if (accessItemMode.equals("open_movie_detail")) {
                         detailedMovieItem = new MovieItem(cursor);
-                    } else if(accessItemMode.equals("open_tv_show_detail")) {
+                    } else if (accessItemMode.equals("open_tv_show_detail")) {
                         detailedTvShowItem = new TvShowItem(cursor);
                     }
                     cursor.close();
@@ -196,8 +196,8 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         // Cek jika savedInstanceState itu ada, jika iya, restore drawable marked as favorite icon state
-        if(savedInstanceState != null){
-            if(accessItemMode.equals("open_movie_detail")){
+        if (savedInstanceState != null) {
+            if (accessItemMode.equals("open_movie_detail")) {
                 detailedMovieFavoriteStateValue = savedInstanceState.getInt(BuildConfig.KEY_DRAWABLE_MARKED_AS_FAVORITE);
                 changedState = savedInstanceState.getBoolean(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE);
                 // Bawa object Uri agar Uri tidak null pada saat rotate, sehingga mencegah run time error
@@ -206,15 +206,15 @@ public class DetailActivity extends AppCompatActivity {
                 detailedMovieItem = savedInstanceState.getParcelable(BuildConfig.FAVORITE_EXTRA_MOVIE_ITEM);
                 // Tujuan dari line code ini adalah agar bs bawa ke result serta handle comparison value
                 // dimana kedua hal tsb dapat menghandle situasi orientation changes
-                if(changedState){ // Cek jika value dari changedState itu true, alias data state ud tergantikan
+                if (changedState) { // Cek jika value dari changedState itu true, alias data state ud tergantikan
                     // Cek jika value dari state value itu 1 = state marked as fav
-                    if(detailedMovieFavoriteStateValue == 1){
+                    if (detailedMovieFavoriteStateValue == 1) {
                         detailedMovieFavoriteStateValueComparison = 1; // Update comparison value
                     } else {
                         detailedMovieFavoriteStateValueComparison = 0;
                     }
                 }
-            } else if(accessItemMode.equals("open_tv_show_detail")) {
+            } else if (accessItemMode.equals("open_tv_show_detail")) {
                 detailedTvShowFavoriteStateValue = savedInstanceState.getInt(BuildConfig.KEY_DRAWABLE_MARKED_AS_FAVORITE);
                 changedState = savedInstanceState.getBoolean(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE);
                 // Bawa object Uri agar Uri tidak null pada saat rotate, sehingga mencegah run time error
@@ -223,7 +223,7 @@ public class DetailActivity extends AppCompatActivity {
                 detailedTvShowItem = savedInstanceState.getParcelable(BuildConfig.FAVORITE_EXTRA_TV_SHOW_ITEM);
                 // Tujuan dari line code ini adalah agar bs bawa ke result serta handle comparison value
                 // dimana kedua hal tsb dapat menghandle situasi orientation changes
-                if(changedState) { // Cek jika value dari changedState itu true, alias data state ud tergantikan
+                if (changedState) { // Cek jika value dari changedState itu true, alias data state ud tergantikan
                     // Cek jika value dari state value itu 1 = state marked as fav
                     if (detailedTvShowFavoriteStateValue == 1) {
                         detailedTvShowFavoriteStateValueComparison = 1; // Update comparison value
@@ -233,21 +233,21 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         } else { // Jika tidak ada bundle savedinstance state
-            if(accessItemMode.equals("open_movie_detail")){
+            if (accessItemMode.equals("open_movie_detail")) {
                 // Valuenya dr MovieFavoriteState d samain sm comparison
                 detailedMovieFavoriteStateValue = detailedMovieFavoriteStateValueComparison;
-            } else if(accessItemMode.equals("open_tv_show_detail")){
+            } else if (accessItemMode.equals("open_tv_show_detail")) {
                 // Valuenya dr TvShowFavoriteState d samain sm comparison
                 detailedTvShowFavoriteStateValue = detailedTvShowFavoriteStateValueComparison;
             }
         }
 
         // Cek kalo ada action bar
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             // Set action bar title untuk DetailActivity
-            if(accessItemMode.equals("open_movie_detail")){
+            if (accessItemMode.equals("open_movie_detail")) {
                 getSupportActionBar().setTitle(detailedMovieTitle); // Set title based on movie title in intent
-            } else if(accessItemMode.equals("open_tv_show_detail")){
+            } else if (accessItemMode.equals("open_tv_show_detail")) {
                 getSupportActionBar().setTitle(detailedTvShowName); // Set title based on tv show name in intent
             }
             // Set up button
@@ -255,7 +255,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         // Mode untuk menangani ViewModel yg berbeda
-        if(accessItemMode.equals("open_movie_detail")) {
+        if (accessItemMode.equals("open_movie_detail")) {
             // Set visibility of views ketika sedang dalam meretrieve data
             detailedInfoContent.setVisibility(View.INVISIBLE);
             detailedProgressBar.setVisibility(View.VISIBLE);
@@ -264,7 +264,7 @@ public class DetailActivity extends AppCompatActivity {
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
             // Network Info object untuk melihat ada data network yang aktif
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            if(networkInfo != null && networkInfo.isConnected()){
+            if (networkInfo != null && networkInfo.isConnected()) {
                 // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
                 detailedFavoriteMovieViewModel = ViewModelProviders.of(this, new DetailedFavoriteMovieViewModelFactory(this.getApplication(), detailedMovieId)).get(DetailedFavoriteMovieViewModel.class);
                 // Buat observer object untuk mendisplay data ke UI
@@ -280,7 +280,7 @@ public class DetailActivity extends AppCompatActivity {
                 // Empty text view yang menunjukkan bahwa tidak ada internet yang sedang terhubung
                 detailedEmptyInfoTextView.setText(getString(R.string.no_internet_connection));
             }
-        } else if(accessItemMode.equals("open_tv_show_detail")) {
+        } else if (accessItemMode.equals("open_tv_show_detail")) {
             // Set visibility of views ketika sedang dalam meretrieve data
             detailedInfoContent.setVisibility(View.INVISIBLE);
             detailedProgressBar.setVisibility(View.VISIBLE);
@@ -290,7 +290,7 @@ public class DetailActivity extends AppCompatActivity {
             // Network Info object untuk melihat ada data network yang aktif
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             // Cek jika ada network connection
-            if(networkInfo != null && networkInfo.isConnected()){
+            if (networkInfo != null && networkInfo.isConnected()) {
                 // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
                 detailedFavoriteTvShowViewModel = ViewModelProviders.of(this, new DetailedFavoriteTvShowViewModelFactory(this.getApplication(), detailedTvShowId)).get(DetailedFavoriteTvShowViewModel.class);
                 // Buat observer object untuk mendisplay data ke UI
@@ -313,7 +313,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 // Mode untuk menangani ViewModel yg berbeda
-                if(accessItemMode.equals("open_movie_detail")) {
+                if (accessItemMode.equals("open_movie_detail")) {
                     // Set visibility of views ketika sedang dalam meretrieve data
                     detailedInfoContent.setVisibility(View.INVISIBLE);
                     detailedProgressBar.setVisibility(View.VISIBLE);
@@ -322,7 +322,7 @@ public class DetailActivity extends AppCompatActivity {
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
                     // Network Info object untuk melihat ada data network yang aktif
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-                    if(networkInfo != null && networkInfo.isConnected()){
+                    if (networkInfo != null && networkInfo.isConnected()) {
                         // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
                         detailedFavoriteMovieViewModel = ViewModelProviders.of(DetailActivity.this, new DetailedFavoriteMovieViewModelFactory(getApplication(), detailedMovieId)).get(DetailedFavoriteMovieViewModel.class);
                         // Buat observer object untuk mendisplay data ke UI
@@ -343,7 +343,7 @@ public class DetailActivity extends AppCompatActivity {
                         // Invalidate option menu for call on prepare option menu
                         invalidateOptionsMenu();
                     }
-                } else if(accessItemMode.equals("open_tv_show_detail")) {
+                } else if (accessItemMode.equals("open_tv_show_detail")) {
                     // Set visibility of views ketika sedang dalam meretrieve data
                     detailedInfoContent.setVisibility(View.INVISIBLE);
                     detailedProgressBar.setVisibility(View.VISIBLE);
@@ -353,7 +353,7 @@ public class DetailActivity extends AppCompatActivity {
                     // Network Info object untuk melihat ada data network yang aktif
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                     // Cek jika ada network connection
-                    if(networkInfo != null && networkInfo.isConnected()){
+                    if (networkInfo != null && networkInfo.isConnected()) {
                         // Panggil MovieViewModel dengan menggunakan ViewModelFactory sebagai parameter tambahan (dan satu-satunya pilihan) selain activity
                         detailedFavoriteTvShowViewModel = ViewModelProviders.of(DetailActivity.this, new DetailedFavoriteTvShowViewModelFactory(getApplication(), detailedTvShowId)).get(DetailedFavoriteTvShowViewModel.class);
                         // Buat observer object untuk mendisplay data ke UI
@@ -383,7 +383,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     // Buat observer method untuk favorite Movie yang gunanya untuk return observer object
-    private Observer<ArrayList<MovieItem>> createDetailedFavoriteMovieObserver(){
+    private Observer<ArrayList<MovieItem>> createDetailedFavoriteMovieObserver() {
         return new Observer<ArrayList<MovieItem>>() {
             // Method tsb triggered ketika data changed dan gunanya itu untuk display data
             @Override
@@ -394,7 +394,7 @@ public class DetailActivity extends AppCompatActivity {
                 detailedProgressBar.setVisibility(View.GONE);
 
                 // Cek jika array list tidak null
-                if(movieItems != null){
+                if (movieItems != null) {
 
                     // Load image jika ada poster path ke dalam circle image view
                     Glide.with(DetailActivity.this)
@@ -403,7 +403,7 @@ public class DetailActivity extends AppCompatActivity {
                             .into(detailedItemPosterImage);
 
                     // Cek jika ada value dari variable movie title
-                    if(movieItems.get(0).getMovieTitle() != null && !movieItems.get(0).getMovieTitle().isEmpty()){
+                    if (movieItems.get(0).getMovieTitle() != null && !movieItems.get(0).getMovieTitle().isEmpty()) {
                         detailedFirstInfoTextView.setText(movieItems.get(0).getMovieTitle());
                     } else {
                         detailedFirstInfoTextView.setText(getString(R.string.detailed_movie_unknown_title)); // Set unknown placeholder value jika tidak ada value dari variable
@@ -415,7 +415,7 @@ public class DetailActivity extends AppCompatActivity {
                     detailedSecondInfoTextView.setText(ratingWord);
 
                     // Cek jika ada value dari variable movie ratings
-                    if(movieItems.get(0).getMovieRatings() != null && !movieItems.get(0).getMovieRatings().isEmpty()){
+                    if (movieItems.get(0).getMovieRatings() != null && !movieItems.get(0).getMovieRatings().isEmpty()) {
                         Spannable ratingDetailedMovie = new SpannableString(movieItems.get(0).getMovieRatings());
                         ratingDetailedMovie.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, ratingDetailedMovie.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         detailedSecondInfoTextView.append(ratingDetailedMovie);
@@ -431,7 +431,7 @@ public class DetailActivity extends AppCompatActivity {
                     detailedThirdInfoTextView.setText(runtimeWord);
 
                     // Cek jika ada value dari variable movie runtime
-                    if(movieItems.get(0).getMovieRuntime() != null && !movieItems.get(0).getMovieRuntime().isEmpty()){
+                    if (movieItems.get(0).getMovieRuntime() != null && !movieItems.get(0).getMovieRuntime().isEmpty()) {
                         Spannable runtimeDetailedMovie = new SpannableString(movieItems.get(0).getMovieRuntime() + " ");
                         runtimeDetailedMovie.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, runtimeDetailedMovie.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         detailedThirdInfoTextView.append(runtimeDetailedMovie);
@@ -449,7 +449,7 @@ public class DetailActivity extends AppCompatActivity {
                     detailedFourthInfoTitleTextView.setText(getString(R.string.detailed_movie_original_language_title));
 
                     // Cek jika ada value dari variable movie original language
-                    if(movieItems.get(0).getMovieOriginalLanguage() != null && !movieItems.get(0).getMovieOriginalLanguage().isEmpty()){
+                    if (movieItems.get(0).getMovieOriginalLanguage() != null && !movieItems.get(0).getMovieOriginalLanguage().isEmpty()) {
                         detailedFourthInfoTextView.setText(movieItems.get(0).getMovieOriginalLanguage());
                     } else {
                         detailedFourthInfoTextView.setText(getString(R.string.detailed_movie_unknown_original_language));
@@ -459,7 +459,7 @@ public class DetailActivity extends AppCompatActivity {
                     detailedFifthInfoTitleTextView.setText(getString(R.string.detailed_movie_release_date_title));
 
                     // Cek jika ada value dari variable movie release date
-                    if(movieItems.get(0).getMovieReleaseDate() != null && !movieItems.get(0).getMovieReleaseDate().isEmpty()){
+                    if (movieItems.get(0).getMovieReleaseDate() != null && !movieItems.get(0).getMovieReleaseDate().isEmpty()) {
                         detailedFifthInfoTextView.setText(movieItems.get(0).getMovieReleaseDate());
                     } else {
                         detailedFifthInfoTextView.setText(getString(R.string.detailed_movie_unknown_release_date));
@@ -469,14 +469,14 @@ public class DetailActivity extends AppCompatActivity {
                     detailedSixthInfoTitleTextView.setText(getString(R.string.detailed_movie_overview_title));
 
                     // Cek jika ada value dari variable movie overview
-                    if(movieItems.get(0).getMovieOverview() != null && !movieItems.get(0).getMovieOverview().isEmpty()){
+                    if (movieItems.get(0).getMovieOverview() != null && !movieItems.get(0).getMovieOverview().isEmpty()) {
                         detailedSixthInfoTextView.setText(movieItems.get(0).getMovieOverview());
                     } else {
                         detailedSixthInfoTextView.setText(getString(R.string.detailed_movie_unknown_overview));
                     }
 
                     // Cek jika ga ada uri
-                    if(uri == null){
+                    if (uri == null) {
                         // Set custom class value bedasarkan object pertama di ArrayList
                         detailedMovieItem = movieItems.get(0);
                     }
@@ -492,7 +492,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     // Buat observer method untuk favorite TV Show yang gunanya untuk return observer object
-    private Observer<ArrayList<TvShowItem>> createDetailedFavoriteTvShowObserver(){
+    private Observer<ArrayList<TvShowItem>> createDetailedFavoriteTvShowObserver() {
         return new Observer<ArrayList<TvShowItem>>() {
             // Method tsb triggered ketika data changed dan gunanya itu untuk display data
             @Override
@@ -503,7 +503,7 @@ public class DetailActivity extends AppCompatActivity {
                 detailedProgressBar.setVisibility(View.GONE);
 
                 // Cek jika array list exist, ini gunanya untuk mencegah null pointer exception
-                if(tvShowItems != null){
+                if (tvShowItems != null) {
 
                     // Load image jika ada poster path ke dalam circle image view
                     Glide.with(DetailActivity.this)
@@ -512,7 +512,7 @@ public class DetailActivity extends AppCompatActivity {
                             .into(detailedItemPosterImage);
 
                     // Cek jika ada value dari variable tv show name
-                    if(tvShowItems.get(0).getTvShowName() != null && !tvShowItems.get(0).getTvShowName().isEmpty()){
+                    if (tvShowItems.get(0).getTvShowName() != null && !tvShowItems.get(0).getTvShowName().isEmpty()) {
                         detailedFirstInfoTextView.setText(tvShowItems.get(0).getTvShowName());
                     } else {
                         detailedFirstInfoTextView.setText(getString(R.string.detailed_tv_show_unknown_name)); // Set unknown placeholder value jika tidak ada value dari variable
@@ -524,7 +524,7 @@ public class DetailActivity extends AppCompatActivity {
                     detailedSecondInfoTextView.setText(ratingWord);
 
                     // Cek jika ada value dari variable tv show ratings
-                    if(tvShowItems.get(0).getTvShowRatings() != null && !tvShowItems.get(0).getTvShowRatings().isEmpty()){
+                    if (tvShowItems.get(0).getTvShowRatings() != null && !tvShowItems.get(0).getTvShowRatings().isEmpty()) {
                         Spannable ratingDetailedTvShow = new SpannableString(tvShowItems.get(0).getTvShowRatings());
                         ratingDetailedTvShow.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, ratingDetailedTvShow.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         detailedSecondInfoTextView.append(ratingDetailedTvShow);
@@ -540,7 +540,7 @@ public class DetailActivity extends AppCompatActivity {
                     detailedThirdInfoTextView.setText(runtimeWord);
 
                     // Cek jika ada value dari variable tv show runtime episodes
-                    if(tvShowItems.get(0).getTvShowRuntimeEpisodes() != null && !tvShowItems.get(0).getTvShowRuntimeEpisodes().isEmpty()){
+                    if (tvShowItems.get(0).getTvShowRuntimeEpisodes() != null && !tvShowItems.get(0).getTvShowRuntimeEpisodes().isEmpty()) {
                         Spannable runtimeDetailedTvShow = new SpannableString(tvShowItems.get(0).getTvShowRuntimeEpisodes() + " ");
                         runtimeDetailedTvShow.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, runtimeDetailedTvShow.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         detailedThirdInfoTextView.append(runtimeDetailedTvShow);
@@ -558,7 +558,7 @@ public class DetailActivity extends AppCompatActivity {
                     detailedFourthInfoTitleTextView.setText(getString(R.string.detailed_tv_show_original_language_title));
 
                     // Cek jika ada value dari variable tv show original language
-                    if(tvShowItems.get(0).getTvShowOriginalLanguage() != null && !tvShowItems.get(0).getTvShowOriginalLanguage().isEmpty()){
+                    if (tvShowItems.get(0).getTvShowOriginalLanguage() != null && !tvShowItems.get(0).getTvShowOriginalLanguage().isEmpty()) {
                         detailedFourthInfoTextView.setText(tvShowItems.get(0).getTvShowOriginalLanguage());
                     } else {
                         detailedFourthInfoTextView.setText(getString(R.string.detailed_tv_show_unknown_original_language));
@@ -568,7 +568,7 @@ public class DetailActivity extends AppCompatActivity {
                     detailedFifthInfoTitleTextView.setText(getString(R.string.detailed_tv_show_first_air_date_title));
 
                     // Cek jika ada value dari variable tv show first air date
-                    if(tvShowItems.get(0).getTvShowFirstAirDate() != null && !tvShowItems.get(0).getTvShowFirstAirDate().isEmpty()){
+                    if (tvShowItems.get(0).getTvShowFirstAirDate() != null && !tvShowItems.get(0).getTvShowFirstAirDate().isEmpty()) {
                         detailedFifthInfoTextView.setText(tvShowItems.get(0).getTvShowFirstAirDate());
                     } else {
                         detailedFifthInfoTextView.setText(getString(R.string.detailed_tv_show_unknown_first_air_date));
@@ -578,14 +578,14 @@ public class DetailActivity extends AppCompatActivity {
                     detailedSixthInfoTitleTextView.setText(getString(R.string.detailed_tv_show_overview_title));
 
                     // Cek jika ada value dari variable tv show overview
-                    if(tvShowItems.get(0).getTvShowOverview() != null && !tvShowItems.get(0).getTvShowOverview().isEmpty()){
+                    if (tvShowItems.get(0).getTvShowOverview() != null && !tvShowItems.get(0).getTvShowOverview().isEmpty()) {
                         detailedSixthInfoTextView.setText(tvShowItems.get(0).getTvShowOverview());
                     } else {
                         detailedSixthInfoTextView.setText(getString(R.string.detailed_tv_show_unknown_overview));
                     }
 
                     // Cek jika ga ada uri yang exist
-                    if(uri == null){
+                    if (uri == null) {
                         // Set custom class value bedasarkan object pertama di ArrayList
                         detailedTvShowItem = tvShowItems.get(0);
                     }
@@ -602,7 +602,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Cek jika menu itu bisa di click
-        if(menuClickable){
+        if (menuClickable) {
             menu.findItem(R.id.action_marked_as_favorite).setEnabled(true); // Set menu item to be clickable, particularly when the data finished on loading
         } else {
             menu.findItem(R.id.action_marked_as_favorite).setEnabled(false); // Set menu item not to be clickable, particularly when the data is on loading
@@ -615,17 +615,17 @@ public class DetailActivity extends AppCompatActivity {
         // Inflate menu
         getMenuInflater().inflate(R.menu.menu_mark_as_favorite_item, menu);
         // Cek untuk mode intent yang tepat
-        if(accessItemMode.equals("open_movie_detail")){
+        if (accessItemMode.equals("open_movie_detail")) {
             // Cek jika value booleannya itu adalah true, yang berarti menandakan movie favorite
-            if(detailedMovieFavoriteStateValue == 1){
+            if (detailedMovieFavoriteStateValue == 1) {
                 // Set drawable resource
                 drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_on;
             } else {
                 drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_off;
             }
-        } else if(accessItemMode.equals("open_tv_show_detail")){
+        } else if (accessItemMode.equals("open_tv_show_detail")) {
             // Cek jika value booleannya itu adalah true, yang berarti menandakan movie favorite
-            if(detailedTvShowFavoriteStateValue == 1){
+            if (detailedTvShowFavoriteStateValue == 1) {
                 // Set drawable resource
                 drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_on;
             } else {
@@ -641,11 +641,11 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Cek untuk menu item id yang tepat
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_marked_as_favorite:
-                if(accessItemMode.equals("open_movie_detail")){
+                if (accessItemMode.equals("open_movie_detail")) {
                     // Check for current state for drawable menu icon
-                    if(detailedMovieFavoriteStateValue != 1){
+                    if (detailedMovieFavoriteStateValue != 1) {
                         // Change icon into marked as favorite
                         drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_on;
                         // Set value state into marked as favorite
@@ -671,7 +671,7 @@ public class DetailActivity extends AppCompatActivity {
                         favoriteMovieColumnValues.put(MOVIE_FAVORITE_COLUMN, detailedMovieItem.getFavoriteBooleanState());
 
                         // Cek jika ada pergantian state dari sebuah data
-                        if(changedState){
+                        if (changedState) {
                             uri = contentResolver.insert(MOVIE_FAVORITE_CONTENT_URI, favoriteMovieColumnValues); // Insert column into content provider through content resolver and return uri
                             detailedMovieFavoriteStateValueComparison = 1; // Ganti value untuk mengupdate comparison
                             // Notify change when data is inserted
@@ -694,9 +694,9 @@ public class DetailActivity extends AppCompatActivity {
                         // Cek jika value dari detailedMovieFavoriteStateValue sama dengan value bawaan intent dengan key FAVORITE_MOVIE_BOOLEAN_STATE_DATA
                         changedState = detailedMovieFavoriteStateValue != detailedMovieFavoriteStateValueComparison; // is changed true jika value favorite state bawaan intent itu tidak sama dengan value favorite state
                         // Cek jika ada pergantian state dari sebuah data
-                        if(changedState){
+                        if (changedState) {
                             // Cek jika ada uri yang direturn dari insert maupun bawaan dari
-                            if(uri != null){
+                            if (uri != null) {
                                 contentResolver.delete(uri, null, null); // Delete column based on inserted URI item into content provider through content resolver
                                 detailedMovieFavoriteStateValueComparison = 0; // Ganti value untuk comparison value, agar dapat menghandle changed state boolean
                                 contentResolver.notifyChange(MOVIE_FAVORITE_CONTENT_URI, new FavoriteMovieDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
@@ -709,8 +709,8 @@ public class DetailActivity extends AppCompatActivity {
                         // Update option menu
                         invalidateOptionsMenu();
                     }
-                } else if(accessItemMode.equals("open_tv_show_detail")){ // Statement code jika mode intentnya berada di TV Show
-                    if(detailedTvShowFavoriteStateValue != 1){
+                } else if (accessItemMode.equals("open_tv_show_detail")) { // Statement code jika mode intentnya berada di TV Show
+                    if (detailedTvShowFavoriteStateValue != 1) {
                         // Change icon into marked as favorite
                         drawableMenuMarkedAsFavouriteResourceId = R.drawable.ic_favorite_toggle_on;
                         // Set value state into marked as favorite
@@ -736,7 +736,7 @@ public class DetailActivity extends AppCompatActivity {
                         favoriteTvShowColumnValues.put(TV_SHOW_FAVORITE_COLUMN, detailedTvShowItem.getFavoriteBooleanState());
 
                         // Cek jika ada pergantian state dari sebuah data
-                        if(changedState){
+                        if (changedState) {
                             uri = contentResolver.insert(TV_SHOW_FAVORITE_CONTENT_URI, favoriteTvShowColumnValues);
                             detailedTvShowFavoriteStateValueComparison = 1; // Ganti value untuk mengupdate comparison
                             contentResolver.notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
@@ -757,9 +757,9 @@ public class DetailActivity extends AppCompatActivity {
                         // Cek jika value dari detailedTvShowFavoriteStateValue sama dengan value bawaan intent dengan key TV_SHOW_BOOLEAN_STATE_EXTRA
                         changedState = detailedTvShowFavoriteStateValue != detailedTvShowFavoriteStateValueComparison; // is changed true jika value favorite state bawaan intent itu tidak sama dengan value favorite state
                         // Cek jika ada pergantian state dari sebuah data
-                        if(changedState){
+                        if (changedState) {
                             // Cek jika urinya itu ada
-                            if(uri != null){
+                            if (uri != null) {
                                 contentResolver.delete(uri, null, null);
                                 detailedTvShowFavoriteStateValueComparison = 0; // Ganti value untuk mengupdate comparison
                                 contentResolver.notifyChange(TV_SHOW_FAVORITE_CONTENT_URI, new FavoriteTvShowDataObserver(new Handler(), DetailActivity.this)); // Notify change on content resolver based on database URI, which is then go to content provider
@@ -783,13 +783,13 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // cek mode intent
-        if(accessItemMode.equals("open_movie_detail")){
+        if (accessItemMode.equals("open_movie_detail")) {
             // Save drawable marked as favorite state for movie as well as boolean changed state + comparisons
             outState.putInt(BuildConfig.KEY_DRAWABLE_MARKED_AS_FAVORITE, detailedMovieFavoriteStateValue);
             outState.putBoolean(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
             outState.putParcelable(BuildConfig.FAVORITE_EXTRA_URI, uri);
             outState.putParcelable(BuildConfig.FAVORITE_EXTRA_MOVIE_ITEM, detailedMovieItem);
-        } else if(accessItemMode.equals("open_tv_show_detail")){
+        } else if (accessItemMode.equals("open_tv_show_detail")) {
             // Save drawable marked as favorite state for tv show as well as boolean changed state + comparisons
             outState.putInt(BuildConfig.KEY_DRAWABLE_MARKED_AS_FAVORITE, detailedTvShowFavoriteStateValue);
             outState.putBoolean(BuildConfig.FAVORITE_EXTRA_CHANGED_STATE, changedState);
@@ -800,7 +800,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     // Method tsb berguna untuk mendapatkan waktu dimana sebuah item di tambahkan
-    private String getCurrentDate(){
+    private String getCurrentDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
 

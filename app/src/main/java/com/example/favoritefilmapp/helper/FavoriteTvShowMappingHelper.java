@@ -17,13 +17,13 @@ import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTv
 
 public class FavoriteTvShowMappingHelper {
     // Method ini berguna untuk memindahkan cursor ke ArrayList
-    public static ArrayList<TvShowItem> mapCursorToFavoriteTvShowArrayList(Cursor favoriteTvShowItemsCursor){
+    public static ArrayList<TvShowItem> mapCursorToFavoriteTvShowArrayList(Cursor favoriteTvShowItemsCursor) {
         // Array list yang di return
         ArrayList<TvShowItem> favoriteTvShowItemList = new ArrayList<>();
 
-        if(favoriteTvShowItemsCursor != null){
+        if (favoriteTvShowItemsCursor != null) {
             // Cek jika masih ada data di cursor
-            while (favoriteTvShowItemsCursor.moveToNext()){
+            while (favoriteTvShowItemsCursor.moveToNext()) {
                 // Get column values
                 int tvShowId = favoriteTvShowItemsCursor.getInt(favoriteTvShowItemsCursor.getColumnIndexOrThrow(_ID));
                 String tvShowName = favoriteTvShowItemsCursor.getString(favoriteTvShowItemsCursor.getColumnIndexOrThrow(TV_SHOW_NAME_COLUMN));
@@ -37,7 +37,7 @@ public class FavoriteTvShowMappingHelper {
                 favoriteTvShowItemList.add(new TvShowItem(tvShowId, tvShowName, tvShowRatings, tvShowOriginalLanguage, tvShowFirstAirDate, tvShowPosterPath, tvShowDateAddedFavorite, tvShowBooleanState));
             }
         }
-        
+
         // Return arraylist
         return favoriteTvShowItemList;
     }

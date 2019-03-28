@@ -17,13 +17,13 @@ import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteMo
 
 public class FavoriteMovieMappingHelper {
     // Method ini berguna untuk memindahkan cursor ke ArrayList
-    public static ArrayList<MovieItem> mapCursorToFavoriteMovieArrayList(Cursor favoriteMovieItemsCursor){
+    public static ArrayList<MovieItem> mapCursorToFavoriteMovieArrayList(Cursor favoriteMovieItemsCursor) {
         // Array list yang di return
         ArrayList<MovieItem> favoriteMovieItemList = new ArrayList<>();
 
-        if(favoriteMovieItemsCursor != null){
+        if (favoriteMovieItemsCursor != null) {
             // Cek jika masih ada data di cursor
-            while (favoriteMovieItemsCursor.moveToNext()){
+            while (favoriteMovieItemsCursor.moveToNext()) {
                 // Get column values
                 int movieId = favoriteMovieItemsCursor.getInt(favoriteMovieItemsCursor.getColumnIndexOrThrow(_ID));
                 String movieTitle = favoriteMovieItemsCursor.getString(favoriteMovieItemsCursor.getColumnIndexOrThrow(MOVIE_TITLE_COLUMN));

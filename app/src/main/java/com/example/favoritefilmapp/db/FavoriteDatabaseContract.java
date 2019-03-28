@@ -51,11 +51,11 @@ public class FavoriteDatabaseContract {
     }
 
     // Buat methods untuk variable value untuk Custom Class item yg membawa Cursor sebagai parameter
-    public static String getColumnString(Cursor cursor, String columnName){
+    public static String getColumnString(Cursor cursor, String columnName) {
         return cursor.getString(cursor.getColumnIndex(columnName));
     }
 
-    public static int getColumnInt(Cursor cursor, String columnName){
+    public static int getColumnInt(Cursor cursor, String columnName) {
         return cursor.getInt(cursor.getColumnIndex(columnName));
     }
 

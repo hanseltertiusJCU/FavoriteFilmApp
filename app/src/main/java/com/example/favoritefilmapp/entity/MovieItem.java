@@ -27,8 +27,8 @@ public class MovieItem implements Parcelable {
     // Nilai untuk tahu bahwa movie item itu termasuk dalam kategori favorit ato tidak
     private int favoriteBooleanState;
 
-    public MovieItem(JSONObject jsonObject){
-        try{
+    public MovieItem(JSONObject jsonObject) {
+        try {
             int dataId = jsonObject.getInt("id");
             String dataTitle = jsonObject.getString("title");
             String dataRuntime = jsonObject.getString("runtime");
@@ -49,13 +49,13 @@ public class MovieItem implements Parcelable {
             this.movieReleaseDate = dataReleaseDate;
             this.movieOverview = dataOverview;
             this.moviePosterPath = dataPosterPath;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     // Empty constructor
-    public MovieItem(){
+    public MovieItem() {
 
     }
 
@@ -72,7 +72,7 @@ public class MovieItem implements Parcelable {
     }
 
     // Constructor untuk menampung Cursor
-    public MovieItem(Cursor cursor){
+    public MovieItem(Cursor cursor) {
         // Method ini berguna untuk set variable values yang ada di column values
         this.movieId = getColumnInt(cursor, _ID);
         this.movieTitle = getColumnString(cursor, FavoriteDatabaseContract.FavoriteMovieItemColumns.MOVIE_TITLE_COLUMN);

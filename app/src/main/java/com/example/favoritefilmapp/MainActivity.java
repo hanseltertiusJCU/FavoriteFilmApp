@@ -11,7 +11,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.favoritefilmapp.async.LoadFavoriteMoviesAsync;
@@ -33,7 +32,7 @@ import static com.example.favoritefilmapp.db.FavoriteDatabaseContract.FavoriteTv
 import static com.example.favoritefilmapp.helper.FavoriteMovieMappingHelper.mapCursorToFavoriteMovieArrayList;
 import static com.example.favoritefilmapp.helper.FavoriteTvShowMappingHelper.mapCursorToFavoriteTvShowArrayList;
 
-public class MainActivity extends AppCompatActivity implements LoadFavoriteMoviesCallback, LoadFavoriteTvShowCallback{
+public class MainActivity extends AppCompatActivity implements LoadFavoriteMoviesCallback, LoadFavoriteTvShowCallback {
 
     // Bind bottom navigation view
     @BindView(R.id.favorite_film_navigation)
@@ -54,14 +53,14 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
             // Cek menu item id yang akan dipilih
-            switch (menuItem.getItemId()){
+            switch (menuItem.getItemId()) {
                 case R.id.navigation_favorite_movie: // Line code jika menu item id adalah navigation_favorite_movie
                     fragment = new FavoriteMovieFragment(); // Set fragment value into certain fragment
                     getSupportFragmentManager().beginTransaction() // Get into Fragment Transaction to access its method
                             .replace(R.id.favorite_film_container_layout, fragment, fragment.getClass().getSimpleName()) // If there is existing fragment, replace selected fragment into container to make container to fill with fragment
                             .commit(); // commit transaction
                     // Cek jika action bar exist
-                    if(getSupportActionBar() != null){
+                    if (getSupportActionBar() != null) {
                         actionBarTitle = getString(R.string.favorite_movie); // Set action bar value
                         getSupportActionBar().setTitle(actionBarTitle); // Set action bar title sesuai dengan fragment tertentu
                     }
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
                             .replace(R.id.favorite_film_container_layout, fragment, fragment.getClass().getSimpleName()) // If there is existing fragment, replace selected fragment into container to make container to fill with fragment
                             .commit(); // commit transaction
                     // Cek jika action bar exist
-                    if(getSupportActionBar() != null){
+                    if (getSupportActionBar() != null) {
                         actionBarTitle = getString(R.string.favorite_tv_show); // Set action bar value
                         getSupportActionBar().setTitle(actionBarTitle); // Set action bar title sesuai dengan fragment tertentu
                     }
@@ -110,10 +109,10 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         getContentResolver().registerContentObserver(TV_SHOW_FAVORITE_CONTENT_URI, true, myFavoriteTvShowObserver); // Register ContentResolver ke ContentObserver bedasarkan URI
 
         // Cek jika bundle tidak ada alias saat pertama kali activity tercipta
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             favoriteFilmBottomNavigationView.setSelectedItemId(R.id.navigation_favorite_movie); // Set default navigation
         } else {
-            if(getSupportActionBar() != null){
+            if (getSupportActionBar() != null) {
                 actionBarTitle = savedInstanceState.getString(BuildConfig.ACTION_BAR_TITLE); // Get value from savedinstancestate
                 getSupportActionBar().setTitle(actionBarTitle); // Set action bar title
             }
@@ -145,35 +144,25 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         // Initiate fragment transaction untuk melakukan fragment operation
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // cek jika fragment nya itu ada
-        if(favoriteMovieFragment != null){
+        if (favoriteMovieFragment != null) {
             // cek jika fragment di attach ke activity
-            if(favoriteMovieFragment.isAdded()){
+            if (favoriteMovieFragment.isAdded()) {
                 fragmentTransaction.detach(favoriteMovieFragment); // detatch fragment existing
                 fragmentTransaction.attach(favoriteMovieFragment); // attatch fragment baru
                 fragmentTransaction.commitAllowingStateLoss(); // commit fragment transaction untuk display dan gunakan method tsb biar mencegah illegal state exception
             }
         }
 
-        // Intent for service
-        Intent serviceIntent = new Intent("com.example.cataloguemoviefinal.START_SERVICE");
-        serviceIntent.setPackage("com.example.cataloguemoviefinal");
-
         // Intent for broadcast receiver
-        Log.d("Action : ", "Action called");
-        Intent intent = new Intent();
+        Intent broadcastIntent = new Intent();
         // Add flags to intent which can be communicated with closed app package (idk if its true)
-        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        Log.d("Flags : ", String.valueOf(intent.getFlags()));
+        broadcastIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         // Set component package
-        // (allow access to com.example.cataloguemoviefinal.widget.FavoriteMovieItemWidget)
-        intent.setComponent(new ComponentName("com.example.cataloguemoviefinal", "com.example.cataloguemoviefinal.widget.FavoriteMovieItemWidget"));
+        broadcastIntent.setComponent(new ComponentName("com.example.cataloguemoviefinal.receiver", "com.example.cataloguemoviefinal.receiver.UpdateWidgetDataReceiver"));
         // Set action
-        intent.setAction("com.example.cataloguemoviefinal.ACTION_UPDATE_WIDGET_DATA");
-        Log.d("Intent action: ", String.valueOf(intent.getAction()));
+        broadcastIntent.setAction("com.example.cataloguemoviefinal.widget.ACTION_UPDATE_WIDGET_DATA");
         // Sent broadcast to receiver
-        sendBroadcast(intent, "com.example.cataloguemoviefinal.UPDATE_WIDGET_DATA");
-        // Log
-        Log.d("Sent", "Broadcast sent!");
+        sendBroadcast(broadcastIntent);
 
     }
 
@@ -197,9 +186,9 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         // Initiate fragment transaction untuk melakukan fragment operation
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // Cek jika fragmentnya itu ada
-        if(favoriteTvShowFragment != null){
+        if (favoriteTvShowFragment != null) {
             // Cek jika fragment di attach ke activity
-            if(favoriteTvShowFragment.isAdded()){
+            if (favoriteTvShowFragment.isAdded()) {
                 fragmentTransaction.detach(favoriteTvShowFragment); // detatch fragment lama
                 fragmentTransaction.attach(favoriteTvShowFragment); // attach fragment baru
                 fragmentTransaction.commitAllowingStateLoss(); // commit fragment transaction untuk display dan gunakan method tsb biar mencegah illegal state exception

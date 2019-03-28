@@ -41,12 +41,12 @@ public class DetailedFavoriteMovieViewModel extends AndroidViewModel {
     }
 
     // Method ini berguna untuk return live data object yang menampung ArrayList<MovieItem> alias return LiveData class since it extends live data object yang menampung ArrayList<MovieItem>
-    public LiveData<ArrayList<MovieItem>> getDetailedFavoriteMovie(){
+    public LiveData<ArrayList<MovieItem>> getDetailedFavoriteMovie() {
         return detailedFavoriteMovieLiveData;
     }
 
     // Class ini berguna untuk membuat datanya
-    private class DetailedFavoriteMovieLiveData extends LiveData<ArrayList<MovieItem>>{
+    private class DetailedFavoriteMovieLiveData extends LiveData<ArrayList<MovieItem>> {
         private final Context context;
         private final int id;
 
@@ -58,9 +58,9 @@ public class DetailedFavoriteMovieViewModel extends AndroidViewModel {
         }
 
         @SuppressLint("StaticFieldLeak")
-        private void loadDetailedFavoriteMovieLiveData(){
+        private void loadDetailedFavoriteMovieLiveData() {
             // Create new Asynctask object
-            new AsyncTask<Void, Void, ArrayList<MovieItem>>(){
+            new AsyncTask<Void, Void, ArrayList<MovieItem>>() {
 
                 @Override
                 protected ArrayList<MovieItem> doInBackground(Void... voids) {
@@ -82,7 +82,7 @@ public class DetailedFavoriteMovieViewModel extends AndroidViewModel {
 
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            try{
+                            try {
                                 // Create JSON Object
                                 String result = new String(responseBody);
                                 JSONObject responseObject = new JSONObject(result);
@@ -90,7 +90,7 @@ public class DetailedFavoriteMovieViewModel extends AndroidViewModel {
                                 MovieItem favoriteMovieItem = new MovieItem(responseObject);
                                 // Add MovieItem ke ArrayList
                                 favoriteMovieItems.add(favoriteMovieItem);
-                            } catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }

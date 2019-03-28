@@ -15,7 +15,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +85,7 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
         recyclerViewFavoriteMovieItems.setBackgroundColor(getResources().getColor(android.R.color.white));
 
         // Cek jika context itu ada
-        if(getContext() != null){
+        if (getContext() != null) {
             // Buat object DividerItemDecoration dan set drawable untuk DividerItemDecoration
             DividerItemDecoration itemDecorator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
             itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getContext(), R.drawable.item_divider)));
@@ -99,7 +98,7 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Cek jika bundle savedInstanceState itu ada
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             // Retrieve array list parcelable
             final ArrayList<MovieItem> movieItemList = savedInstanceState.getParcelableArrayList(BuildConfig.FAVORITE_MOVIE_LIST_STATE);
             // Cek jika array list itu ada
@@ -136,13 +135,13 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
         }
 
         // Cek jika ada activity
-        if(getActivity() != null){
+        if (getActivity() != null) {
             // Connectivity manager untuk mengecek state dari network connectivity
             ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             // Network Info object untuk melihat ada data network yang aktif
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             // Cek jika ada network connection
-            if(networkInfo != null && networkInfo.isConnected()){
+            if (networkInfo != null && networkInfo.isConnected()) {
                 // Lakukan AsyncTask utk meretrieve ArrayList yg isinya data dari database
                 new LoadFavoriteMoviesAsync(getActivity(), this).execute();
             } else {
@@ -162,13 +161,13 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
             @Override
             public void onRefresh() {
                 // Cek jika ada activity
-                if(getActivity() != null){
+                if (getActivity() != null) {
                     // Connectivity manager untuk mengecek state dari network connectivity
                     ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                     // Network Info object untuk melihat ada data network yang aktif
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                     // Cek jika ada network connection
-                    if(networkInfo != null && networkInfo.isConnected()){
+                    if (networkInfo != null && networkInfo.isConnected()) {
                         // Lakukan AsyncTask utk meretrieve ArrayList yg isinya data dari database
                         new LoadFavoriteMoviesAsync(getActivity(), FavoriteMovieFragment.this).execute();
                     } else {
@@ -188,7 +187,7 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
     }
 
     // Method tsb berguna untuk membawa value dari Intent ke Activity tujuan serta memanggil Activity tujuan
-    private void showSelectedFavoriteMovieItems(MovieItem favoriteMovieItem){
+    private void showSelectedFavoriteMovieItems(MovieItem favoriteMovieItem) {
         // Dapatkan id dan title bedasarkan item di ArrayList
         int favoriteMovieIdItem = favoriteMovieItem.getMovieId();
         String favoriteMovieTitleItem = favoriteMovieItem.getMovieTitle();
@@ -212,7 +211,7 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
 
     @Override
     public void favoriteMoviePreExecute() {
-        if(getActivity() != null){
+        if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -228,7 +227,7 @@ public class FavoriteMovieFragment extends Fragment implements LoadFavoriteMovie
     @Override
     public void favoriteMoviePostExecute(Cursor favoriteMovieItems) {
         // Cek jika array list ada data
-        if(MainActivity.favoriteMovieItemArray.size() > 0){
+        if (MainActivity.favoriteMovieItemArray.size() > 0) {
             // Ketika data selesai di load, maka kita akan mendapatkan data dan menghilangkan progress bar
             // yang menandakan bahwa loadingnya sudah selesai
             progressBar.setVisibility(View.GONE);

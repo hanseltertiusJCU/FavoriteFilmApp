@@ -15,7 +15,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +84,7 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
         recyclerViewFavoriteTvShowItems.setBackgroundColor(getResources().getColor(android.R.color.white));
 
         // Cek jika context itu ada
-        if(getContext() != null){
+        if (getContext() != null) {
             // Buat object DividerItemDecoration dan set drawable untuk DividerItemDecoration
             DividerItemDecoration itemDecorator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
             itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getContext(), R.drawable.item_divider)));
@@ -98,12 +97,12 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Cek jika bundle savedInstanceState itu ada
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             // Retrieve array list parcelable untuk retrieve scroll position
             final ArrayList<TvShowItem> tvShowItemsList = savedInstanceState.getParcelableArrayList(BuildConfig.FAVORITE_TV_SHOW_LIST_STATE);
             // Cek jika array list exist
-            if(tvShowItemsList != null) {
-                if(tvShowItemsList.size() > 0) {
+            if (tvShowItemsList != null) {
+                if (tvShowItemsList.size() > 0) {
                     // Hilangkan progress bar agar tidak ada progress bar lagi setelah d rotate
                     progressBar.setVisibility(View.GONE);
                     recyclerViewFavoriteTvShowItems.setVisibility(View.VISIBLE);
@@ -134,13 +133,13 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
         }
 
         // Cek jika ada activity
-        if(getActivity() != null){
+        if (getActivity() != null) {
             // Connectivity manager untuk mengecek state dari network connectivity
             ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             // Network Info object untuk melihat ada data network yang aktif
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             // Cek jika ada network connection
-            if(networkInfo != null && networkInfo.isConnected()){
+            if (networkInfo != null && networkInfo.isConnected()) {
                 // Lakukan AsyncTask utk meretrieve ArrayList yg isinya data dari database
                 new LoadFavoriteTvShowAsync(getActivity(), this).execute();
             } else {
@@ -159,13 +158,13 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
             @Override
             public void onRefresh() {
                 // Cek jika ada activity
-                if(getActivity() != null){
+                if (getActivity() != null) {
                     // Connectivity manager untuk mengecek state dari network connectivity
                     ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                     // Network Info object untuk melihat ada data network yang aktif
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                     // Cek jika ada network connection
-                    if(networkInfo != null && networkInfo.isConnected()){
+                    if (networkInfo != null && networkInfo.isConnected()) {
                         // Lakukan AsyncTask utk meretrieve ArrayList yg isinya data dari database
                         new LoadFavoriteTvShowAsync(getActivity(), FavoriteTvShowFragment.this).execute();
                     } else {
@@ -185,7 +184,7 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
     }
 
     // Method tsb berguna untuk membawa value dari Intent ke Activity tujuan serta memanggil Activity tujuan
-    private void showSelectedFavoriteTvShowItems(TvShowItem favoriteTvShowItem){
+    private void showSelectedFavoriteTvShowItems(TvShowItem favoriteTvShowItem) {
         // Dapatkan id dan title bedasarkan item di ArrayList
         int favoriteTvShowIdItem = favoriteTvShowItem.getTvShowId();
         String favoriteTvShowNameItem = favoriteTvShowItem.getTvShowName();
@@ -210,7 +209,7 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
 
     @Override
     public void favoriteTvShowPreExecute() {
-        if(getActivity() != null){
+        if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -226,7 +225,7 @@ public class FavoriteTvShowFragment extends Fragment implements LoadFavoriteTvSh
     @Override
     public void favoriteTvShowPostExecute(Cursor favoriteTvShowItems) {
         // Cek jika array list ada data
-        if(MainActivity.favoriteTvShowItemArray.size() > 0){
+        if (MainActivity.favoriteTvShowItemArray.size() > 0) {
             // Ketika data selesai di load, maka kita akan mendapatkan data dan menghilangkan progress bar
             // yang menandakan bahwa loadingnya sudah selesai
             progressBar.setVisibility(View.GONE);

@@ -17,7 +17,7 @@ public class RecyclerViewItemClickSupport {
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(mOnRecyclerViewItemClickListener != null){
+            if (mOnRecyclerViewItemClickListener != null) {
                 // Initiate RecyclerView.ViewHolder object
                 RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(view);
                 // Use the interface method based on adapter position in RecyclerView
@@ -34,7 +34,7 @@ public class RecyclerViewItemClickSupport {
         RecyclerView.OnChildAttachStateChangeListener mAttachListener = new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
-                if(mOnRecyclerViewItemClickListener != null){
+                if (mOnRecyclerViewItemClickListener != null) {
                     view.setOnClickListener(mOnClickListener); // Method ini terhubung dengan onClick (alias call back method since event (action) listener berhubungan dengan callback (reaction)) di variable View.OnClickListener object
                 }
             }
@@ -48,11 +48,11 @@ public class RecyclerViewItemClickSupport {
     }
 
     // Method to return support that attach support to the view
-    public static RecyclerViewItemClickSupport addClickSupportToView(RecyclerView recyclerView){
+    public static RecyclerViewItemClickSupport addClickSupportToView(RecyclerView recyclerView) {
         // Get recycler view tag {@link constructor yg memiliki parameter RecyclerView} dan return RecyclerViewItemClickSupport dengan cast
         RecyclerViewItemClickSupport recyclerViewItemClickSupport = (RecyclerViewItemClickSupport) recyclerView.getTag(R.id.recycler_view_item_click_support);
         // Cek jika objectnya itu tidak ada
-        if(recyclerViewItemClickSupport == null){
+        if (recyclerViewItemClickSupport == null) {
             recyclerViewItemClickSupport = new RecyclerViewItemClickSupport(recyclerView); // Initiate new object by bringing the recyclerview parameter as the parameter of the constructor of new object
         }
         return recyclerViewItemClickSupport; // Return the object
@@ -64,7 +64,7 @@ public class RecyclerViewItemClickSupport {
     }
 
     // Create Interface and create a method without implementation
-    public interface OnRecyclerViewItemClickListener{
+    public interface OnRecyclerViewItemClickListener {
         void onItemClicked(RecyclerView recyclerView, int position, View view);
     }
 }

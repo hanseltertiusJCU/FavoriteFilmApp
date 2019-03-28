@@ -12,9 +12,8 @@
     <uses-permission android:name="com.example.cataloguemoviefinal.READ_DATABASE" />
     <uses-permission android:name="com.example.cataloguemoviefinal.WRITE_DATABASE" />
 
-    <!-- Code ini untuk menggunakan permission yg d declare dari CatalogueMovieFinal
-    untuk Widget Data -->
-    <uses-permission android:name="com.example.cataloguemoviefinal.UPDATE_WIDGET_DATA"/>
+    <!-- This code is used for custom BroadcastReceiver -->
+    <uses-permission android:name="com.example.cataloguemoviefinal.widget.UPDATE_WIDGET_DATA"/>
 
     <application
         android:allowBackup="true"

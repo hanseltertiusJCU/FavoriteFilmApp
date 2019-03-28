@@ -30,7 +30,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
     private Context context;
 
     // Constructor that takes up Context
-    public MovieItemAdapter(Context context){
+    public MovieItemAdapter(Context context) {
         this.context = context;
     }
 
@@ -40,12 +40,12 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
     }
 
     // Get context
-    private Context getContext(){
+    private Context getContext() {
         return context;
     }
 
     // Set data into arraylist global variable
-    public void setMovieItemData(ArrayList<MovieItem> mMovieItemData){
+    public void setMovieItemData(ArrayList<MovieItem> mMovieItemData) {
         // Clear existing array list content
         this.mMovieItemData.clear();
         // Add everything (parameter) into array list
@@ -105,7 +105,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
     }
 
     // Kelas ini berguna untuk menampung view yang ada tanpa mendeclare view di adapter
-    class MovieItemViewHolder extends RecyclerView.ViewHolder{
+    class MovieItemViewHolder extends RecyclerView.ViewHolder {
         // Assign view by binding view
         @BindView(R.id.poster_image)
         ImageView imageViewFavoriteMoviePoster;

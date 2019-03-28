@@ -45,7 +45,7 @@ public class TvShowItemAdapter extends RecyclerView.Adapter<TvShowItemAdapter.Tv
     }
 
     // Set data into arraylist global variable
-    public void setTvShowItemData(ArrayList<TvShowItem> mTvShowItemData){
+    public void setTvShowItemData(ArrayList<TvShowItem> mTvShowItemData) {
         // Clear existing array list content
         this.mTvShowItemData.clear();
         // Add everything (parameter) into array list
@@ -103,7 +103,7 @@ public class TvShowItemAdapter extends RecyclerView.Adapter<TvShowItemAdapter.Tv
         return getTvShowItemData().size();
     }
 
-    class TvShowItemViewHolder extends RecyclerView.ViewHolder{
+    class TvShowItemViewHolder extends RecyclerView.ViewHolder {
         // Assign view by binding view
         @BindView(R.id.poster_image)
         ImageView imageViewFavoriteTvShowPoster;

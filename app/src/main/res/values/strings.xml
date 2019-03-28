@@ -12,12 +12,10 @@
     <string name="span_tv_show_item_first_air_date">First Air Date :</string>
 
     <!-- Set Span detailed movie item section title -->
-    <string name="span_movie_detail_rating">Rating :</string>
     <string name="span_movie_detail_runtime">Runtime :</string>
     <string name="span_movie_detail_runtime_minutes">minute(s)</string>
 
     <!-- Set Span detailed TV Show item section title -->
-    <string name="span_tv_show_detail_rating">Rating :</string>
     <string name="span_tv_show_detail_runtime_episodes">Episodes Runtime :</string>
     <string name="span_tv_show_detail_runtime_episodes_minutes">minute(s)</string>
 
@@ -44,8 +42,6 @@
 
     <!-- Set Detailed Movie section value placeholder -->
     <string name="detailed_movie_rating_text">Detailed Movie Rating Text</string>
-    <string name="detailed_movie_status_text">Detailed Movie Status Text</string>
-    <string name="detailed_movie_tagline_text">Detailed Movie Tagline Text</string>
     <string name="detailed_movie_runtime_text">Detailed Movie Runtime Text</string>
     <string name="detailed_movie_title_text">Detailed Movie Title Text</string>
     <string name="detailed_movie_overview_text">Detailed Overview</string>
@@ -60,14 +56,12 @@
     <!-- Set Detailed TV Show section title -->
     <string name="detailed_tv_show_overview_title">Overview</string>
     <string name="detailed_tv_show_first_air_date_title">First Air Date</string>
-    <string name="detailed_tv_show_original_language_text">Original Language Text</string>
     <string name="detailed_tv_show_original_language_title">Original Language</string>
 
     <!-- Placeholder for unknown values in detail movies -->
     <string name="detailed_movie_unknown_title">Title Unknown</string>
     <string name="detailed_movie_unknown_runtime">Runtime Unknown</string>
     <string name="detailed_movie_default_value_ratings">0</string>
-    <string name="detailed_movie_default_value_ratings_vote">0</string>
     <string name="detailed_movie_unknown_original_language">Original Language Unknown</string>
     <string name="detailed_movie_unknown_release_date">Release Date Unknown</string>
     <string name="detailed_movie_unknown_overview">Overview Unknown</string>
@@ -76,7 +70,6 @@
     <string name="detailed_tv_show_unknown_name">Name Unknown</string>
     <string name="detailed_tv_show_unknown_episodes_runtime">Episodes Runtime Unknown</string>
     <string name="detailed_tv_show_default_value_ratings">0</string>
-    <string name="detailed_tv_show_default_value_ratings_vote">0</string>
     <string name="detailed_tv_show_unknown_original_language">Original Language Unknown</string>
     <string name="detailed_tv_show_unknown_first_air_date">First Air Date Unknown</string>
     <string name="detailed_tv_show_unknown_overview">Overview Unknown</string>

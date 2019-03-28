@@ -44,26 +44,26 @@ public class DetailedFavoriteTvShowViewModel extends AndroidViewModel {
     // Method ini berguna untuk return live data object yang menampung ArrayList<MovieItem>
     // alias return LiveData class since it extends
     // live data object yang menampung ArrayList<MovieItem>
-    public LiveData<ArrayList<TvShowItem>> getDetailedFavoriteTvShow(){
+    public LiveData<ArrayList<TvShowItem>> getDetailedFavoriteTvShow() {
         return detailedFavoriteTvShowLiveData;
     }
 
     // Class ini berguna untuk membuat datanya
-    private class DetailedFavoriteTvShowLiveData extends LiveData<ArrayList<TvShowItem>>{
+    private class DetailedFavoriteTvShowLiveData extends LiveData<ArrayList<TvShowItem>> {
         private final Context context;
         private final int id;
 
         // Buat constructor untuk mengakomodasi parameter yang ada di {@link DetailedFavoriteMovieViewModel}
-        DetailedFavoriteTvShowLiveData(Context context, int id){
+        DetailedFavoriteTvShowLiveData(Context context, int id) {
             this.context = context;
             this.id = id;
             loadDetailedFavoriteTvShowLiveData(); // Call method untuk dapatin array list object
         }
 
         @SuppressLint("StaticFieldLeak")
-        private void loadDetailedFavoriteTvShowLiveData(){
+        private void loadDetailedFavoriteTvShowLiveData() {
             // Create new AsyncTask object
-            new AsyncTask<Void, Void, ArrayList<TvShowItem>>(){
+            new AsyncTask<Void, Void, ArrayList<TvShowItem>>() {
 
                 @Override
                 protected ArrayList<TvShowItem> doInBackground(Void... voids) {
@@ -85,7 +85,7 @@ public class DetailedFavoriteTvShowViewModel extends AndroidViewModel {
 
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            try{
+                            try {
                                 // Create JSON Object
                                 String result = new String(responseBody);
                                 JSONObject responseObject = new JSONObject(result);
@@ -93,7 +93,7 @@ public class DetailedFavoriteTvShowViewModel extends AndroidViewModel {
                                 TvShowItem favoriteTvShowItem = new TvShowItem(responseObject);
                                 // Add MovieItem ke ArrayList
                                 favoriteTvShowItems.add(favoriteTvShowItem);
-                            } catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
