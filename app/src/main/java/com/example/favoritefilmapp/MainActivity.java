@@ -1,6 +1,9 @@
 package com.example.favoritefilmapp;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -8,7 +11,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.favoritefilmapp.async.LoadFavoriteMoviesAsync;
@@ -151,6 +154,26 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
             }
         }
 
+        // Intent for service
+        Intent serviceIntent = new Intent("com.example.cataloguemoviefinal.START_SERVICE");
+        serviceIntent.setPackage("com.example.cataloguemoviefinal");
+
+        // Intent for broadcast receiver
+        Log.d("Action : ", "Action called");
+        Intent intent = new Intent();
+        // Add flags to intent which can be communicated with closed app package (idk if its true)
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        Log.d("Flags : ", String.valueOf(intent.getFlags()));
+        // Set component package
+        // (allow access to com.example.cataloguemoviefinal.widget.FavoriteMovieItemWidget)
+        intent.setComponent(new ComponentName("com.example.cataloguemoviefinal", "com.example.cataloguemoviefinal.widget.FavoriteMovieItemWidget"));
+        // Set action
+        intent.setAction("com.example.cataloguemoviefinal.ACTION_UPDATE_WIDGET_DATA");
+        Log.d("Intent action: ", String.valueOf(intent.getAction()));
+        // Sent broadcast to receiver
+        sendBroadcast(intent, "com.example.cataloguemoviefinal.UPDATE_WIDGET_DATA");
+        // Log
+        Log.d("Sent", "Broadcast sent!");
 
     }
 
