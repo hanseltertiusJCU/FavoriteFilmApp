@@ -13,7 +13,7 @@
     <uses-permission android:name="com.example.cataloguemoviefinal.WRITE_DATABASE" />
 
     <!-- This code is used for custom BroadcastReceiver -->
-    <uses-permission android:name="com.example.cataloguemoviefinal.widget.UPDATE_WIDGET_DATA"/>
+    <uses-permission android:name="com.example.cataloguemoviefinal.UPDATE_WIDGET_DATA"/>
 
     <application
         android:allowBackup="true"

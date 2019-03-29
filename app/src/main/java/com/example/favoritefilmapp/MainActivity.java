@@ -157,12 +157,10 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
         Intent broadcastIntent = new Intent();
         // Add flags to intent which can be communicated with closed app package (idk if its true)
         broadcastIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        // Set component package
-        broadcastIntent.setComponent(new ComponentName("com.example.cataloguemoviefinal.receiver", "com.example.cataloguemoviefinal.receiver.UpdateWidgetDataReceiver"));
         // Set action
-        broadcastIntent.setAction("com.example.cataloguemoviefinal.widget.ACTION_UPDATE_WIDGET_DATA");
-        // Sent broadcast to receiver
-        sendBroadcast(broadcastIntent);
+        broadcastIntent.setAction("com.example.cataloguemoviefinal.ACTION_UPDATE_WIDGET_DATA");
+        // Sent broadcast to receiver (use permission)
+        sendBroadcast(broadcastIntent, "com.example.cataloguemoviefinal.UPDATE_WIDGET_DATA");
 
     }
 
