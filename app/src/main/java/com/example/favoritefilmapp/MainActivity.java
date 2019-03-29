@@ -1,6 +1,5 @@
 package com.example.favoritefilmapp;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -155,11 +154,11 @@ public class MainActivity extends AppCompatActivity implements LoadFavoriteMovie
 
         // Intent for broadcast receiver
         Intent broadcastIntent = new Intent();
-        // Add flags to intent which can be communicated with closed app package (idk if its true)
+        // Add flags to intent which can be communicated with closed app package
         broadcastIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        // Set action
+        // Set action for broadcast receiver class in CatalogueMovieFinal
         broadcastIntent.setAction("com.example.cataloguemoviefinal.ACTION_UPDATE_WIDGET_DATA");
-        // Sent broadcast to receiver (use permission)
+        // Sent broadcast to receiver (use permission from uses-permission in Manifest to do so)
         sendBroadcast(broadcastIntent, "com.example.cataloguemoviefinal.UPDATE_WIDGET_DATA");
 
     }
